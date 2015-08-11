@@ -8,9 +8,9 @@ public class Cell {
 
 	public static final Optional<Integer> NO_VALUE = Optional.empty();
 
-	public static final String CELL_VALUE_CHANGE = "CELL_VALUE_CHANGE";
+	public static final String CELL_VALUE = "Cell.Value";
 
-	public static final String CELL_STATUS_CHANGE = "CELL_STATUS_CHANGE";
+	public static final String CELL_STATUS = "CEll.Status";
 
 	private static void validateRange(Integer i, String description) {
 		assert(i > 0) && (i < 10) : "Invalid " + description + ": " + i;
@@ -19,6 +19,8 @@ public class Cell {
 	private final int row;
 
 	private final int column;
+
+	private final int sector;
 
 	private Optional<Integer> value;
 
@@ -32,6 +34,8 @@ public class Cell {
 
 		this.row = row;
 		this.column = column;
+		this.sector = ((row > 6) ? 6 : ((row > 3) ? 3 : 0)) //
+				+ ((column > 6) ? 3 : ((column > 3) ? 2 : 1));
 		this.value = NO_VALUE;
 		this.status = CellStatus.IDLE;
 	}
@@ -42,6 +46,10 @@ public class Cell {
 
 	public int getColumn() {
 		return column;
+	}
+
+	public int getSector() {
+		return sector;
 	}
 
 	public Optional<Integer> getValue() {
@@ -56,7 +64,7 @@ public class Cell {
 
 		Optional<Integer> old = this.value;
 		this.value = value;
-		this.pcs.firePropertyChange(CELL_VALUE_CHANGE, old, value);
+		this.pcs.firePropertyChange(CELL_VALUE, old, value);
 	}
 
 	public void setValue(int value) {
@@ -72,7 +80,7 @@ public class Cell {
 
 		CellStatus old = this.status;
 		this.status = status;
-		this.pcs.firePropertyChange(CELL_STATUS_CHANGE, old, status);
+		this.pcs.firePropertyChange(CELL_STATUS, old, status);
 	}
 
 	public void addPropertyChangeListener(PropertyChangeListener listener) {

@@ -80,8 +80,9 @@ public class CellTest {
 		Cell c = new Cell(1, 1);
 		int newValue = 5;
 		c.addPropertyChangeListener((PropertyChangeEvent evt) -> {
+			System.out.println(evt.getSource());
 			assertSame(c, evt.getSource());
-			assertEquals(Cell.CELL_VALUE_CHANGE, evt.getPropertyName());
+			assertEquals(Cell.CELL_VALUE, evt.getPropertyName());
 			assertEquals(evt.getOldValue(), Cell.NO_VALUE);
 			assertEquals(Optional.of(newValue), evt.getNewValue());
 		});
@@ -109,8 +110,9 @@ public class CellTest {
 		Cell c = new Cell(1, 1);
 		CellStatus newStatus = CellStatus.FILLED;
 		c.addPropertyChangeListener((PropertyChangeEvent evt) -> {
+			System.out.println(evt.getSource());
 			assertSame(c, evt.getSource());
-			assertEquals(Cell.CELL_STATUS_CHANGE, evt.getPropertyName());
+			assertEquals(Cell.CELL_STATUS, evt.getPropertyName());
 			assertEquals(CellStatus.IDLE, evt.getOldValue());
 			assertEquals(evt.getNewValue(), newStatus);
 		});
