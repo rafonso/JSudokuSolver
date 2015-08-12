@@ -10,10 +10,6 @@ public class Puzzle {
 
 	public static final String PUZZLE_STATUS = "Puzzle.Status";
 
-	private static void validateRange(Integer i, String description) {
-		assert(i > 0) && (i < 10) : "Invalid " + description + ": " + i;
-	}
-
 	private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
 	private final List<Cell> cells;
@@ -33,8 +29,8 @@ public class Puzzle {
 	}
 
 	public Cell getCell(int row, int col) {
-		validateRange(row, "Row");
-		validateRange(col, "Column");
+		CellFunctions.validateRange(row, "Row");
+		CellFunctions.validateRange(col, "Column");
 
 		return cells.get((9 * (row - 1)) + (col - 1));
 	}

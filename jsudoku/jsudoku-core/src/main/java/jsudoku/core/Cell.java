@@ -12,10 +12,6 @@ public class Cell {
 
 	public static final String CELL_STATUS = "CEll.Status";
 
-	private static void validateRange(Integer i, String description) {
-		assert(i > 0) && (i < 10) : "Invalid " + description + ": " + i;
-	}
-
 	private final int row;
 
 	private final int column;
@@ -29,8 +25,8 @@ public class Cell {
 	private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
 	public Cell(int row, int column) {
-		validateRange(row, "Row");
-		validateRange(column, "Column");
+		CellFunctions.validateRange(row, "Row");
+		CellFunctions.validateRange(column, "Column");
 
 		this.row = row;
 		this.column = column;
@@ -59,7 +55,7 @@ public class Cell {
 	public void setValue(Optional<Integer> value) {
 		assert value != null;
 		if (value.isPresent()) {
-			validateRange(value.get(), "Cell Value");
+			CellFunctions.validateRange(value.get(), "Cell Value");
 		}
 
 		Optional<Integer> old = this.value;
