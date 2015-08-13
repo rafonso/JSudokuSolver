@@ -76,8 +76,8 @@ public class CellFunctionsTest {
 		Puzzle p = new Puzzle();
 		for (int i = 1; i <= 9; i++) {
 			Set<Integer> positions = new HashSet<>();
-			final int position = i;
-			p.getCells().stream().filter(CellFunctions.getColumnPredicate(i)).forEach(c -> {
+			final int position = i;			
+			p.getCells().stream().filter(PuzzlePositions.COLUMN.getPositionPredicate(i)).forEach(c -> {
 				assertEquals(position, c.getColumn());
 				if (!positions.add(c.getRow())) {
 					fail("Repeated Row: " + c.getRow());
@@ -92,7 +92,7 @@ public class CellFunctionsTest {
 		for (int i = 1; i <= 9; i++) {
 			Set<Integer> positions = new HashSet<>();
 			final int position = i;
-			p.getCells().stream().filter(CellFunctions.getRowPredicate(i)).forEach(c -> {
+			p.getCells().stream().filter(PuzzlePositions.ROW.getPositionPredicate(i)).forEach(c -> {
 				assertEquals(position, c.getRow());
 				if (!positions.add(c.getColumn())) {
 					fail("Repeated Column: " + c.getColumn());
@@ -107,7 +107,7 @@ public class CellFunctionsTest {
 		for (int i = 1; i <= 9; i++) {
 //			Set<Integer> positions = new HashSet<>();
 			final int position = i;
-			p.getCells().stream().filter(CellFunctions.getSectorPredicate(i)).forEach(c -> {
+			p.getCells().stream().filter(PuzzlePositions.SECTOR.getPositionPredicate(i)).forEach(c -> {
 				assertEquals(position, c.getSector());
 //				if (!positions.add(c.getColumn())) {
 //					fail("Repeated Column: " + c.getColumn());

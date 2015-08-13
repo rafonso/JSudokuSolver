@@ -1,5 +1,10 @@
 package jsudoku.core;
 
+import static jsudoku.core.CellFunctions.CELL_TO_VALUE_OR_0;
+import static jsudoku.core.CellFunctions.rangeStream;
+import static jsudoku.core.CellFunctions.validateRange;
+import static jsudoku.core.PuzzlePositions.ROW;
+
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.Collections;
@@ -13,8 +18,8 @@ public class Puzzle {
 	public static final String PUZZLE_STATUS = "Puzzle.Status";
 
 	private final Function<? super Integer, ? extends String> rowToString = row -> this.getCellsStream()
-			.filter(CellFunctions.getRowPredicate(row)) //
-			.map(CellFunctions.CELL_TO_VALUE_OR_0) //
+			.filter(ROW.getPositionPredicate(row)) //
+			.map(CELL_TO_VALUE_OR_0) //
 			.map(String::valueOf) //
 			.collect(Collectors.joining());
 
@@ -25,17 +30,17 @@ public class Puzzle {
 	private PuzzleStatus status;
 
 	public Puzzle() {
-		final Function<? super Integer, ? extends Stream<? extends Cell>> rowToCells = r -> CellFunctions.rangeStream()
+		final Function<? super Integer, ? extends Stream<? extends Cell>> rowToCells = r -> rangeStream()
 				.map(c -> new Cell(r, c));
-		final Stream<Cell> cellsStream = CellFunctions.rangeStream().flatMap(rowToCells);
+		final Stream<Cell> cellsStream = rangeStream().flatMap(rowToCells);
 
 		this.cells = Collections.unmodifiableList(cellsStream.collect(Collectors.toList()));
 		this.status = PuzzleStatus.WAITING;
 	}
 
 	public Cell getCell(int row, int col) {
-		CellFunctions.validateRange(row, "Row");
-		CellFunctions.validateRange(col, "Column");
+		validateRange(row, "Row");
+		validateRange(col, "Column");
 
 		return cells.get((9 * (row - 1)) + (col - 1));
 	}
@@ -69,7 +74,7 @@ public class Puzzle {
 	}
 
 	public String formatCells() {
-		return CellFunctions.rangeStream().map(rowToString).collect(Collectors.joining("."));
+		return rangeStream().map(rowToString).collect(Collectors.joining("."));
 	}
 
 }
