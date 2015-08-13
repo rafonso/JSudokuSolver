@@ -47,7 +47,7 @@ public class CellFunctionsTest {
 	@Test(expected = NoSuchElementException.class)
 	public void cellToValueInvalid() {
 		Cell c = new Cell(1, 1);
-		int value = CellFunctions.CELL_TO_VALUE.applyAsInt(c);
+		int value = CellFunctions.CELL_TO_VALUE.apply(c);
 		fail(value + "");
 	}
 
@@ -55,20 +55,20 @@ public class CellFunctionsTest {
 	public void cellToValueValid() {
 		Cell c = new Cell(1, 1);
 		c.setValue(5);
-		assertEquals(5, CellFunctions.CELL_TO_VALUE.applyAsInt(c));
+		assertEquals(5, CellFunctions.CELL_TO_VALUE.apply(c).intValue());
 	}
 
 	@Test
 	public void cellToValueOr0With0() {
 		Cell c = new Cell(1, 1);
-		assertEquals(0, CellFunctions.CELL_TO_VALUE_OR_0.applyAsInt(c));
+		assertEquals(0, CellFunctions.CELL_TO_VALUE_OR_0.apply(c).intValue());
 	}
 
 	@Test
 	public void cellToValueOr0Valid() {
 		Cell c = new Cell(1, 1);
 		c.setValue(5);
-		assertEquals(5, CellFunctions.CELL_TO_VALUE_OR_0.applyAsInt(c));
+		assertEquals(5, CellFunctions.CELL_TO_VALUE_OR_0.apply(c).intValue());
 	}
 
 	@Test

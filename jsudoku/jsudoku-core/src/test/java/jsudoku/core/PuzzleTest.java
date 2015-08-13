@@ -12,6 +12,8 @@ public class PuzzleTest {
 	public void puzzleCreation() {
 		Puzzle p = new Puzzle();
 		assertSame(PuzzleStatus.WAITING, p.getStatus());
+		assertEquals("000000000.000000000.000000000.000000000.000000000.000000000.000000000.000000000.000000000",
+				p.formatCells());
 	}
 
 	@Test(expected = AssertionError.class)
