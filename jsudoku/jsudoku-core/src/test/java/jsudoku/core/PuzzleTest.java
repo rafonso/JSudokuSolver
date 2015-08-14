@@ -1,6 +1,9 @@
 package jsudoku.core;
 
-import static org.junit.Assert.*;
+import static jsudoku.core.CellFunctions.rangeStream;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
 
 import java.beans.PropertyChangeEvent;
 
@@ -38,7 +41,6 @@ public class PuzzleTest {
 		Puzzle p = new Puzzle();
 		PuzzleStatus newStatus = PuzzleStatus.READY;
 		p.addPropertyChangeListener((PropertyChangeEvent evt) -> {
-			System.out.println(evt.getSource());
 			assertSame(p, evt.getSource());
 			assertEquals(Puzzle.PUZZLE_STATUS, evt.getPropertyName());
 			assertEquals(PuzzleStatus.WAITING, evt.getOldValue());
@@ -63,13 +65,11 @@ public class PuzzleTest {
 	@Test
 	public void getValidCells() {
 		Puzzle p = new Puzzle();
-		for (int r = 1; r <= 9; r++) {
-			for (int c = 1; c <= 9; c++) {
-				Cell cell = p.getCell(r, c);
-				assertEquals(r, cell.getRow());
-				assertEquals(c, cell.getColumn());
-			}
-		}
+		rangeStream().forEach(r -> rangeStream().forEach(c -> {
+			Cell cell = p.getCell(r, c);
+			assertEquals(r.intValue(), cell.getRow());
+			assertEquals(c.intValue(), cell.getColumn());
+		}));
 	}
 
 }

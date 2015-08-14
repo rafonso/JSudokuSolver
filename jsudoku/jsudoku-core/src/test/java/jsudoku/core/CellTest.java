@@ -1,6 +1,10 @@
 package jsudoku.core;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.beans.PropertyChangeEvent;
 import java.util.Optional;
@@ -80,7 +84,6 @@ public class CellTest {
 		Cell c = new Cell(1, 1);
 		int newValue = 5;
 		c.addPropertyChangeListener((PropertyChangeEvent evt) -> {
-			System.out.println(evt.getSource());
 			assertSame(c, evt.getSource());
 			assertEquals(Cell.CELL_VALUE, evt.getPropertyName());
 			assertEquals(evt.getOldValue(), Cell.NO_VALUE);
@@ -110,7 +113,6 @@ public class CellTest {
 		Cell c = new Cell(1, 1);
 		CellStatus newStatus = CellStatus.FILLED;
 		c.addPropertyChangeListener((PropertyChangeEvent evt) -> {
-			System.out.println(evt.getSource());
 			assertSame(c, evt.getSource());
 			assertEquals(Cell.CELL_STATUS, evt.getPropertyName());
 			assertEquals(CellStatus.IDLE, evt.getOldValue());

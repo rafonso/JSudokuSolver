@@ -77,4 +77,9 @@ public class Puzzle {
 		return rangeStream().map(rowToString).collect(Collectors.joining("."));
 	}
 
+	@Override
+	public String toString() {
+		return "[" + this.formatCells() + ", " + this.status + "]";
+	}
+
 }
