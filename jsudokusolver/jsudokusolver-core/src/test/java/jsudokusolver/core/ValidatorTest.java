@@ -4,14 +4,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
 
-import org.junit.Test;
+import java.beans.PropertyChangeListener;
 
-import jsudokusolver.core.EmptyPuzzleException;
-import jsudokusolver.core.InvalidPuzzleException;
-import jsudokusolver.core.Puzzle;
-import jsudokusolver.core.PuzzlePositions;
-import jsudokusolver.core.RepeatedCellsException;
-import jsudokusolver.core.Validator;
+import org.junit.Test;
 
 public class ValidatorTest {
 
@@ -19,6 +14,24 @@ public class ValidatorTest {
 
 	private void fillCell(Puzzle p, int row, int col, int value) {
 		p.getCell(row, col).setValue(value);
+	}
+
+	private PropertyChangeListener addValidationListening(Puzzle p, PuzzleStatus endStatus) {
+		return (evt -> {
+			assertSame(p, evt.getSource());
+			assertSame("Should be changing Puzzle Status", Puzzle.PUZZLE_STATUS, evt.getPropertyName());
+			assertSame(evt.getNewValue(), p.getStatus());
+			if (evt.getNewValue().equals(PuzzleStatus.VALIDATING)) {
+				assertSame("Old Puzzle Status Should be " + PuzzleStatus.WAITING, PuzzleStatus.WAITING,
+						evt.getOldValue());
+			} else if (evt.getNewValue().equals(endStatus)) {
+				assertSame("Old Puzzle Status Should be " + PuzzleStatus.VALIDATING, PuzzleStatus.VALIDATING,
+						evt.getOldValue());
+
+			} else {
+				fail("Invalid New Status: " + evt.getNewValue());
+			}
+		});
 	}
 
 	private Puzzle getSamplePuzzle() {
@@ -66,18 +79,22 @@ public class ValidatorTest {
 
 	@Test(expected = EmptyPuzzleException.class)
 	public void emptyPuzzle() throws InvalidPuzzleException {
-		this.validator.validate(new Puzzle());
+		final Puzzle p = new Puzzle();
+		p.addPropertyChangeListener(this.addValidationListening(p, PuzzleStatus.INVALID));
+		this.validator.validate(p);
 	}
 
 	@Test
 	public void validPuzzle() {
 		Puzzle p = this.getSamplePuzzle();
+		p.addPropertyChangeListener(this.addValidationListening(p, PuzzleStatus.READY));
 		this.validator.validate(p);
 	}
 
 	@Test
 	public void repetitionInRow() {
 		Puzzle p = this.getSamplePuzzle();
+		p.addPropertyChangeListener(this.addValidationListening(p, PuzzleStatus.INVALID));
 		this.fillCell(p, 6, 6, 1);
 
 		try {
@@ -102,6 +119,7 @@ public class ValidatorTest {
 	@Test
 	public void repetitionInColumn() {
 		Puzzle p = this.getSamplePuzzle();
+		p.addPropertyChangeListener(this.addValidationListening(p, PuzzleStatus.INVALID));
 		this.fillCell(p, 8, 8, 3);
 
 		try {
@@ -126,6 +144,7 @@ public class ValidatorTest {
 	@Test
 	public void repetitionInSector() {
 		Puzzle p = this.getSamplePuzzle();
+		p.addPropertyChangeListener(this.addValidationListening(p, PuzzleStatus.INVALID));
 		this.fillCell(p, 6, 9, 4);
 
 		try {
