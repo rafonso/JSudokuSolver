@@ -1,9 +1,9 @@
-package jsudoku.core;
+package jsudokusolver.core;
 
-import static jsudoku.core.CellFunctions.CELL_TO_VALUE_OR_0;
-import static jsudoku.core.CellFunctions.rangeStream;
-import static jsudoku.core.CellFunctions.validateRange;
-import static jsudoku.core.PuzzlePositions.ROW;
+import static jsudokusolver.core.CellFunctions.CELL_TO_VALUE_OR_0;
+import static jsudokusolver.core.CellFunctions.rangeStream;
+import static jsudokusolver.core.CellFunctions.validateRange;
+import static jsudokusolver.core.PuzzlePositions.ROW;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;

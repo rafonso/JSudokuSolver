@@ -1,7 +1,7 @@
-package jsudoku.core;
+package jsudokusolver.core;
 
-import static jsudoku.core.CellFunctions.IS_FILLED;
-import static jsudoku.core.CellFunctions.rangeStream;
+import static jsudokusolver.core.CellFunctions.IS_FILLED;
+import static jsudokusolver.core.CellFunctions.rangeStream;
 
 public class Validator {
 

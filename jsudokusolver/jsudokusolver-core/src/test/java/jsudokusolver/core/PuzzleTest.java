@@ -1,6 +1,6 @@
-package jsudoku.core;
+package jsudokusolver.core;
 
-import static jsudoku.core.CellFunctions.rangeStream;
+import static jsudokusolver.core.CellFunctions.rangeStream;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
@@ -8,6 +8,10 @@ import static org.junit.Assert.fail;
 import java.beans.PropertyChangeEvent;
 
 import org.junit.Test;
+
+import jsudokusolver.core.Cell;
+import jsudokusolver.core.Puzzle;
+import jsudokusolver.core.PuzzleStatus;
 
 public class PuzzleTest {
 

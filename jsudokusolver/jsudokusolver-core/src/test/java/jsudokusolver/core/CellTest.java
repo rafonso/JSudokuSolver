@@ -1,4 +1,4 @@
-package jsudoku.core;
+package jsudokusolver.core;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -10,6 +10,9 @@ import java.beans.PropertyChangeEvent;
 import java.util.Optional;
 
 import org.junit.Test;
+
+import jsudokusolver.core.Cell;
+import jsudokusolver.core.CellStatus;
 
 public class CellTest {
 

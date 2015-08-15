@@ -1,4 +1,4 @@
-package jsudoku.core;
+package jsudokusolver.core;
 
 public class InvalidPuzzleException extends RuntimeException {
 

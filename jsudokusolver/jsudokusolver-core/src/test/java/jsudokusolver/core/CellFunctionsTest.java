@@ -1,4 +1,4 @@
-package jsudoku.core;
+package jsudokusolver.core;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -12,6 +12,11 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import org.junit.Test;
+
+import jsudokusolver.core.Cell;
+import jsudokusolver.core.CellFunctions;
+import jsudokusolver.core.Puzzle;
+import jsudokusolver.core.PuzzlePositions;
 
 public class CellFunctionsTest {
 

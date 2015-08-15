@@ -1,4 +1,4 @@
-package jsudoku.core;
+package jsudokusolver.core;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
