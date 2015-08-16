@@ -11,6 +11,7 @@ import jsudokusolver.core.Cell;
 import jsudokusolver.core.CellStatus;
 import jsudokusolver.core.Puzzle;
 import jsudokusolver.core.PuzzleStatus;
+import jsudokusolver.core.Solver;
 
 public class ConsoleListener implements PropertyChangeListener {
 
@@ -51,6 +52,10 @@ public class ConsoleListener implements PropertyChangeListener {
 		}
 	}
 
+	private void solverCycleChanged(Integer newValue) {
+		log.debug("Cycle {}", newValue);
+	}
+
 	@SuppressWarnings("unchecked")
 	public void propertyChange(PropertyChangeEvent evt) {
 		switch (evt.getPropertyName()) {
@@ -66,7 +71,9 @@ public class ConsoleListener implements PropertyChangeListener {
 			this.puzzleStatusChanged((Puzzle) evt.getSource(), (PuzzleStatus) evt.getOldValue(),
 					(PuzzleStatus) evt.getNewValue());
 			break;
-		// TODO SOlver Cycle
+		case Solver.SOLVER_CYCLE:
+			this.solverCycleChanged((Integer) evt.getNewValue());
+			break;
 		default:
 			throw new IllegalStateException("Irrregular change type: " + evt.getPropertyName() + ". Event: " + evt);
 		}

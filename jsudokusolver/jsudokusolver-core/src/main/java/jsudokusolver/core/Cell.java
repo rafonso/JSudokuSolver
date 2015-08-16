@@ -78,6 +78,10 @@ public class Cell {
 		this.status = status;
 		this.pcs.firePropertyChange(CELL_STATUS, old, status);
 	}
+	
+	public boolean hasValue() {
+		return this.value.isPresent();
+	}
 
 	public void addPropertyChangeListener(PropertyChangeListener listener) {
 		this.pcs.addPropertyChangeListener(listener);
