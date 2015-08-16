@@ -27,7 +27,6 @@ public class ValidatorTest {
 			} else if (evt.getNewValue().equals(endStatus)) {
 				assertSame("Old Puzzle Status Should be " + PuzzleStatus.VALIDATING, PuzzleStatus.VALIDATING,
 						evt.getOldValue());
-
 			} else {
 				fail("Invalid New Status: " + evt.getNewValue());
 			}
