@@ -17,9 +17,6 @@ public class CellFunctions {
 		assert(i > 0) && (i < 10) : "Invalid " + description + ": " + i;
 	}
 
-	// @Deprecated
-	// public static final Predicate<Cell> IS_FILLED = (Cell::hasValue);
-
 	public static final Function<Cell, Integer> CELL_TO_VALUE = (c -> c.getValue().get());
 
 	public static final Function<Cell, Integer> CELL_TO_VALUE_OR_0 = (c -> c.getValue().orElse(0));

@@ -1,7 +1,7 @@
 package jsudokusolver.console;
 
 import java.time.Instant;
-import java.time.Period;
+import java.util.Scanner;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -81,6 +81,11 @@ public class SudokuSolver {
 		ConsoleListener listener = new ConsoleListener();
 		Puzzle puzzle = commandToPuzzle(args[0], listener);
 		new Validator().validate(puzzle);
+
+		if (args.length > 1 && args[1].equalsIgnoreCase("pause")) {
+			Scanner sc = new Scanner(System.in);
+			sc.nextLine();
+		}
 
 		System.out.println("Solving Puzzle: " + puzzle.formatCells());
 

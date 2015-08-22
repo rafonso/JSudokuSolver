@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -62,7 +63,7 @@ public class Solver {
 	private void solveCell(Cell c, Puzzle puzzle, boolean mementoIsEmpty) {
 		c.setStatus(EVALUATING);
 
-		List<Integer> possibleValues = getPossibleValues(c, puzzle);
+		List<Integer> possibleValues = this.getPossibleValues(c, puzzle);
 
 		if (possibleValues.isEmpty() && mementoIsEmpty) {
 			puzzle.setStatus(INVALID);
@@ -81,7 +82,7 @@ public class Solver {
 	}
 
 	private List<Cell> getEmptyCells(Puzzle puzzle) {
-		return puzzle.getCellsStream().filter(((Predicate<Cell>) Cell::hasValue).negate()).collect(toList());
+		return puzzle.getCellsStream().filter(c -> !c.hasValue()).collect(toList());
 	}
 
 	private SolverGuess removeInvalidGuess(Puzzle puzzle, Deque<SolverGuess> memento, boolean popMemento) {
@@ -94,8 +95,8 @@ public class Solver {
 			throw new InvalidPuzzleException("There is no solution!");
 		}
 		solverGuess.discardCurrentGuessValue();
-		this.fireSolverGuessEvent(SolverGuessEventType.REMOVAL,
-				puzzle.getCell(solverGuess.getGuessPosition()[0], solverGuess.getGuessPosition()[1]));
+		final int[] guessPosition = solverGuess.getGuessPosition();
+		this.fireSolverGuessEvent(SolverGuessEventType.REMOVAL, puzzle.getCell(guessPosition[0], guessPosition[1]));
 		return solverGuess;
 	}
 
@@ -109,8 +110,9 @@ public class Solver {
 	}
 
 	private void prepareGuess(Puzzle puzzle, List<Cell> emptyCells, Deque<SolverGuess> memento) {
-		Cell guessCell = emptyCells.subList(1, emptyCells.size()).stream().reduce(emptyCells.get(0),
-				(c1, c2) -> (getPossibleValues(c1, puzzle).size() <= getPossibleValues(c2, puzzle).size()) ? c1 : c2);
+		final BinaryOperator<Cell> accumulator = (c1,
+				c2) -> (getPossibleValues(c1, puzzle).size() <= getPossibleValues(c2, puzzle).size()) ? c1 : c2;
+		Cell guessCell = emptyCells.subList(1, emptyCells.size()).stream().reduce(emptyCells.get(0), accumulator);
 		List<Integer> possibleValues = this.getPossibleValues(guessCell, puzzle);
 
 		if (!possibleValues.isEmpty()) {
@@ -118,9 +120,10 @@ public class Solver {
 			List<int[]> emptyPositions = emptyCells.stream().map(cellToPosition).collect(toList());
 			memento.addFirst(new SolverGuess(cellToPosition.apply(guessCell), possibleValues, emptyPositions));
 		} else if (!memento.isEmpty()) {
-			SolverGuess solverGuess = removeInvalidGuess(puzzle, memento, false);
-			while (solverGuess.isEmpty()) {
-				solverGuess = removeInvalidGuess(puzzle, memento, true);
+			for (SolverGuess solverGuess = removeInvalidGuess(puzzle, memento, false); //
+			solverGuess.isEmpty(); //
+			solverGuess = removeInvalidGuess(puzzle, memento, true)) {
+				;
 			}
 		} else {
 			puzzle.setStatus(INVALID);
@@ -130,27 +133,29 @@ public class Solver {
 		fillGuess(memento.peek(), puzzle);
 	}
 
+	private List<Cell> solveCycle(Puzzle puzzle, final Deque<SolverGuess> guesses, List<Cell> emptyCells) {
+		this.incrementCycle();
+		emptyCells.forEach(c -> this.solveCell(c, puzzle, guesses.isEmpty()));
+
+		List<Cell> nextEmptyCells = this.getEmptyCells(puzzle);
+		if (nextEmptyCells.size() == emptyCells.size()) {
+			this.prepareGuess(puzzle, nextEmptyCells, guesses);
+			nextEmptyCells = this.getEmptyCells(puzzle);
+		}
+		return nextEmptyCells;
+	}
+
 	public void start(Puzzle puzzle) {
 		assert puzzle.getStatus() == READY : "Puzzle is not ready to be solved. Current status: " + puzzle.getStatus();
 
-		puzzle.setStatus(RUNNING);
-		final Deque<SolverGuess> memento = new LinkedList<>();
+		final Deque<SolverGuess> guesses = new LinkedList<>();
 		List<Cell> emptyCells = this.getEmptyCells(puzzle);
-		int quantOfEmptyCells = emptyCells.size();
 
+		puzzle.setStatus(RUNNING);
 		// Main loop
-		while (quantOfEmptyCells > 0) {
-			this.incrementCycle();
-			emptyCells.forEach(c -> this.solveCell(c, puzzle, memento.isEmpty()));
-			emptyCells = this.getEmptyCells(puzzle);
-			if (emptyCells.size() < quantOfEmptyCells) {
-				quantOfEmptyCells = emptyCells.size();
-			} else {
-				this.prepareGuess(puzzle, emptyCells, memento);
-				emptyCells = this.getEmptyCells(puzzle);
-			}
+		while (!emptyCells.isEmpty()) {
+			emptyCells = this.solveCycle(puzzle, guesses, emptyCells);
 		}
-
 		puzzle.setStatus(SOLVED);
 	}
 
