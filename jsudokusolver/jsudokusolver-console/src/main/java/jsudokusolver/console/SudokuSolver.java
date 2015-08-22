@@ -1,5 +1,7 @@
 package jsudokusolver.console;
 
+import java.time.Instant;
+import java.time.Period;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -35,7 +37,7 @@ public class SudokuSolver {
 			int digit = digits.toCharArray()[pos] - '0';
 			if (digit > 0) {
 				cell.setValue(digit);
-				cell.setStatus(CellStatus.FILLED);
+				cell.setStatus(CellStatus.ORIGINAL);
 			}
 		}
 
@@ -46,8 +48,8 @@ public class SudokuSolver {
 		final Function<? super Integer, ? extends String> formatRow = row -> {
 			Integer[] values = p.getCellsStream().filter(PuzzlePositions.ROW.getPositionPredicate(row))
 					.map(CellFunctions.CELL_TO_VALUE_OR_0).collect(Collectors.toList()).toArray(new Integer[9]);
-			return String.format("\u2502%d%d%d\u2502%d%d%d\u2502%d%d%d\u2502%n", values[0], values[1], values[2], values[3], values[4],
-					values[5], values[6], values[7], values[8]);
+			return String.format("\u2502%d%d%d\u2502%d%d%d\u2502%d%d%d\u2502%n", values[0], values[1], values[2],
+					values[3], values[4], values[5], values[6], values[7], values[8]);
 		};
 		String[] formatedRows = CellFunctions.rangeStream().map(formatRow).collect(Collectors.toList())
 				.toArray(new String[9]);
@@ -80,13 +82,19 @@ public class SudokuSolver {
 		Puzzle puzzle = commandToPuzzle(args[0], listener);
 		new Validator().validate(puzzle);
 
-		System.out.println(formatPuzzle(puzzle));
+		System.out.println("Solving Puzzle: " + puzzle.formatCells());
 
 		final Solver solver = new Solver();
 		solver.addPropertyChangeListener(listener);
-		solver.start(puzzle);
+		solver.addSolverGuessListener(listener);
 
-		System.out.println(formatPuzzle(puzzle));
+		Instant t0 = Instant.now();
+		solver.start(puzzle);
+		Instant t1 = Instant.now();
+
+		// System.out.println(formatPuzzle(puzzle));
+		System.out.println("Puzzle Solved: " + puzzle.formatCells());
+		System.out.printf("Time: %d ms", (t1.toEpochMilli() - t0.toEpochMilli()));
 	}
 
 }

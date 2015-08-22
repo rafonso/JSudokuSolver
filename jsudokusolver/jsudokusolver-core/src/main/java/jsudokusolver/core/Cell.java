@@ -4,7 +4,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.Optional;
 
-public class Cell {
+public class Cell implements Cloneable {
 
 	public static final Optional<Integer> NO_VALUE = Optional.empty();
 
@@ -78,7 +78,12 @@ public class Cell {
 		this.status = status;
 		this.pcs.firePropertyChange(CELL_STATUS, old, status);
 	}
-	
+
+	public void setValueStatus(Integer value, CellStatus status) {
+		this.setValue(Optional.ofNullable(value));
+		this.setStatus(status);
+	}
+
 	public boolean hasValue() {
 		return this.value.isPresent();
 	}
@@ -122,6 +127,11 @@ public class Cell {
 	@Override
 	public String toString() {
 		return "[" + row + column + (value.isPresent() ? value.get() : 0) + status.getCode() + "]";
+	}
+
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		return new Cell(row, column);
 	}
 
 }

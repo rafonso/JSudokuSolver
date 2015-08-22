@@ -39,14 +39,14 @@ public class CellFunctionsTest {
 	@Test
 	public void cellIsNotFilled() {
 		Cell c = new Cell(1, 1);
-		assertFalse(CellFunctions.IS_FILLED.test(c));
+		assertFalse(c.hasValue());
 	}
 
 	@Test
 	public void cellIsFilled() {
 		Cell c = new Cell(1, 1);
 		c.setValue(5);
-		assertTrue(CellFunctions.IS_FILLED.test(c));
+		assertTrue(c.hasValue());
 	}
 
 	@Test(expected = NoSuchElementException.class)

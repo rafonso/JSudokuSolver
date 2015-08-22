@@ -1,12 +1,11 @@
 package jsudokusolver.core;
 
-import static jsudokusolver.core.CellFunctions.IS_FILLED;
 import static jsudokusolver.core.CellFunctions.rangeStream;
 
 public class Validator {
 
 	private void validateFilling(Puzzle p) throws EmptyPuzzleException {
-		if (p.getCells().stream().noneMatch(IS_FILLED)) {
+		if (p.getCells().stream().noneMatch(Cell::hasValue)) {
 			p.setStatus(PuzzleStatus.INVALID);
 			throw new EmptyPuzzleException();
 		}
@@ -15,7 +14,7 @@ public class Validator {
 	private void validateRepetition(Puzzle p, PuzzlePositions puzzlePositions) throws RepeatedCellsException {
 		rangeStream().forEach(pos -> {
 			Cell[] cellsByValue = new Cell[10];
-			p.getCellsStream().filter(puzzlePositions.getPositionPredicate(pos).and(IS_FILLED)).forEach(c -> {
+			p.getCellsStream().filter(puzzlePositions.getPositionPredicate(pos).and(Cell::hasValue)).forEach(c -> {
 				final Integer value = c.getValue().get();
 				if (cellsByValue[value] != null) {
 					p.setStatus(PuzzleStatus.INVALID);

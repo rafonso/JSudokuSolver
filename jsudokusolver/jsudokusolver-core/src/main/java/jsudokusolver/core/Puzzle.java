@@ -30,8 +30,7 @@ public class Puzzle {
 	private PuzzleStatus status;
 
 	public Puzzle() {
-		final Function<? super Integer, ? extends Stream<? extends Cell>> rowToCells = r -> rangeStream()
-				.map(c -> new Cell(r, c));
+		final Function<Integer, Stream<Cell>> rowToCells = r -> rangeStream().map(c -> new Cell(r, c));
 		final Stream<Cell> cellsStream = rangeStream().flatMap(rowToCells);
 
 		this.cells = Collections.unmodifiableList(cellsStream.collect(Collectors.toList()));
