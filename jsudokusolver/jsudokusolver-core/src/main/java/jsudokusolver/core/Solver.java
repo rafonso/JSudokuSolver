@@ -16,6 +16,7 @@ import static jsudokusolver.core.PuzzleStatus.READY;
 import static jsudokusolver.core.PuzzleStatus.RUNNING;
 import static jsudokusolver.core.PuzzleStatus.SOLVED;
 
+import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
@@ -28,8 +29,14 @@ import java.util.function.Predicate;
 
 import jsudokusolver.core.SolverGuessEvent.SolverGuessEventType;
 
+/**
+ * Solves a {@link Puzzle}
+ */
 public class Solver {
 
+	/**
+	 * Indicates the {@link #getCycle() Cycle} was changed.
+	 */
 	public static final String SOLVER_CYCLE = "Solver.cycle";
 
 	private int cycle = 0;
@@ -38,6 +45,10 @@ public class Solver {
 
 	private final List<SolverGuessListener> solverGuessListeners = new ArrayList<>();
 
+	/**
+	 * Incements the current Solver's Cycle. It fires a
+	 * {@link PropertyChangeEvent} of type {@link #SOLVER_CYCLE}.
+	 */
 	private void incrementCycle() {
 		this.cycle++;
 		this.pcs.firePropertyChange(SOLVER_CYCLE, this.cycle - 1, this.cycle);
@@ -145,6 +156,12 @@ public class Solver {
 		return nextEmptyCells;
 	}
 
+	/**
+	 * Starts a Puzzle solving.
+	 * 
+	 * @param puzzle
+	 *            Puzzle to be solved.
+	 */
 	public void start(Puzzle puzzle) {
 		assert puzzle.getStatus() == READY : "Puzzle is not ready to be solved. Current status: " + puzzle.getStatus();
 
@@ -159,22 +176,49 @@ public class Solver {
 		puzzle.setStatus(SOLVED);
 	}
 
+	/**
+	 * @return The current Solver's cycle.
+	 */
 	public int getCycle() {
 		return cycle;
 	}
 
+	/**
+	 * Adds a apropriate {@link PropertyChangeListener Listener} to this Solver.
+	 * 
+	 * @param listener
+	 *            Listener to be added.
+	 */
 	public void addPropertyChangeListener(PropertyChangeListener listener) {
 		this.pcs.addPropertyChangeListener(listener);
 	}
 
+	/**
+	 * Removes a {@link PropertyChangeListener Listener} to this Solver.
+	 * 
+	 * @param listener
+	 *            Listener to be removed.
+	 */
 	public void removePropertyChangeListener(PropertyChangeListener listener) {
 		this.pcs.removePropertyChangeListener(listener);
 	}
 
+	/**
+	 * Adds a apropriate {@link SolverGuessListener} to this Solver.
+	 * 
+	 * @param listener
+	 *            SolverGuessListener to be added.
+	 */
 	public void addSolverGuessListener(SolverGuessListener listener) {
 		this.solverGuessListeners.add(listener);
 	}
 
+	/**
+	 * Removes a {@link SolverGuessListener} to this Solver.
+	 * 
+	 * @param listener
+	 *            Listener to be removed.
+	 */
 	public void removeSolverGuessListener(SolverGuessListener listener) {
 		this.solverGuessListeners.remove(listener);
 	}
