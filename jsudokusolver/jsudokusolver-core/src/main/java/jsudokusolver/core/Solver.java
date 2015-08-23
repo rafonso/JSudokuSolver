@@ -2,7 +2,7 @@ package jsudokusolver.core;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
-import static jsudokusolver.core.CellFunctions.CELL_TO_VALUE;
+import static jsudokusolver.core.Cell.CELL_TO_VALUE;
 import static jsudokusolver.core.CellFunctions.rangeStream;
 import static jsudokusolver.core.CellStatus.EVALUATING;
 import static jsudokusolver.core.CellStatus.FILLED;

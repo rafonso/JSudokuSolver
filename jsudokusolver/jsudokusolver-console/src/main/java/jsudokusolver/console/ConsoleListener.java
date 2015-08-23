@@ -43,6 +43,7 @@ public class ConsoleListener implements PropertyChangeListener, SolverGuessListe
 		}
 	}
 
+	@SuppressWarnings("unused")
 	private void cellStatusChanged(Cell cell, CellStatus from, CellStatus to) {
 		if (log.isTraceEnabled()) {
 			log.trace("Cell({},{}): changing status from {} to {}", cell.getRow(), cell.getColumn(), from, to);

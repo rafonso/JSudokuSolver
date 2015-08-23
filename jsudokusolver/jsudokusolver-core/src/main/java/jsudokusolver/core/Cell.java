@@ -3,7 +3,9 @@ package jsudokusolver.core;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * Represents a Sudoku Puzzle Cell. It contains a {@link #getRow() Row}, a
@@ -13,6 +15,20 @@ import java.util.Optional;
  * {@link PropertyChangeListener Listeners}.
  */
 public class Cell implements Cloneable {
+
+	private static Function<Cell, Optional<Integer>> CELL_TO_OPT_VALUE = Cell::getValue;
+
+	/**
+	 * Given a {@link Cell}, returns its Integer {@link Cell#getValue() Value}.
+	 * It can throws a {@link NoSuchElementException}, if the Cell is empty.
+	 */
+	static final Function<Cell, Integer> CELL_TO_VALUE = CELL_TO_OPT_VALUE.andThen(Optional::get);
+
+	/**
+	 * Given a {@link Cell}, returns its Integer {@link Cell#getValue() Value}
+	 * or 0 if empty.
+	 */
+	static final Function<Cell, Integer> CELL_TO_VALUE_OR_0 = CELL_TO_OPT_VALUE.andThen(o -> o.orElse(0));
 
 	/**
 	 * Indicate a no-value for a Cell.

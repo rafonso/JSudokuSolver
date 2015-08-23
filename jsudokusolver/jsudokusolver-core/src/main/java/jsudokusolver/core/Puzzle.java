@@ -1,6 +1,6 @@
 package jsudokusolver.core;
 
-import static jsudokusolver.core.CellFunctions.CELL_TO_VALUE_OR_0;
+import static jsudokusolver.core.Cell.CELL_TO_VALUE_OR_0;
 import static jsudokusolver.core.CellFunctions.rangeStream;
 import static jsudokusolver.core.CellFunctions.validateRange;
 import static jsudokusolver.core.PuzzlePositions.ROW;
@@ -89,17 +89,10 @@ public class Puzzle {
 	}
 
 	/**
-	 * @return This Puzzle Cells.
-	 */
-	public List<Cell> getCells() {
-		return cells;
-	}
-
-	/**
 	 * @return This Puzzle Cells as a {@link Stream}
 	 */
-	public Stream<Cell> getCellsStream() {
-		return this.getCells().stream();
+	Stream<Cell> getCellsStream() {
+		return this.cells.stream();
 	}
 
 	/**
@@ -132,6 +125,36 @@ public class Puzzle {
 	 */
 	public String formatCells() {
 		return rangeStream().map(rowToString).collect(Collectors.joining("."));
+	}
+
+	/**
+	 * Returs a String representation of this Puzzle as a square of numbers.
+	 * 
+	 * @return
+	 */
+	public String formatPuzzle() {
+		final Function<? super Integer, ? extends String> formatRow = row -> {
+			Integer[] values = this.getCellsStream().filter(PuzzlePositions.ROW.getPositionPredicate(row))
+					.map(CELL_TO_VALUE_OR_0).collect(Collectors.toList()).toArray(new Integer[9]);
+			return String.format("\u2502%d%d%d\u2502%d%d%d\u2502%d%d%d\u2502%n", values[0], values[1], values[2],
+					values[3], values[4], values[5], values[6], values[7], values[8]);
+		};
+		String[] formatedRows = CellFunctions.rangeStream().map(formatRow).collect(Collectors.toList())
+				.toArray(new String[9]);
+
+		return "\u250C\u2500\u2500\u2500\u252C\u2500\u2500\u2500\u252C\u2500\u2500\u2500\u2510\n" //
+				+ formatedRows[0] //
+				+ formatedRows[1] //
+				+ formatedRows[2] //
+				+ "\u251C\u2500\u2500\u2500\u253C\u2500\u2500\u2500\u253C\u2500\u2500\u2500\u2524\n" //
+				+ formatedRows[3] //
+				+ formatedRows[4] //
+				+ formatedRows[5] //
+				+ "\u251C\u2500\u2500\u2500\u253C\u2500\u2500\u2500\u253C\u2500\u2500\u2500\u2524\n" //
+				+ formatedRows[6] //
+				+ formatedRows[7] //
+				+ formatedRows[8] //
+				+ "\u2514\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2518\n";
 	}
 
 	/**

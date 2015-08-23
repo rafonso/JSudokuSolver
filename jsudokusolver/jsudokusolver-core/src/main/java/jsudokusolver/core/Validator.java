@@ -22,7 +22,7 @@ import static jsudokusolver.core.CellFunctions.rangeStream;
 public class Validator {
 
 	private void validateFilling(Puzzle p) throws EmptyPuzzleException {
-		if (p.getCells().stream().noneMatch(Cell::hasValue)) {
+		if (p.getCellsStream().noneMatch(Cell::hasValue)) {
 			p.setStatus(PuzzleStatus.INVALID);
 			throw new EmptyPuzzleException();
 		}

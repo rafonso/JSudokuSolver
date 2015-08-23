@@ -14,7 +14,6 @@ import java.util.function.Predicate;
 import org.junit.Test;
 
 import jsudokusolver.core.Cell;
-import jsudokusolver.core.CellFunctions;
 import jsudokusolver.core.Puzzle;
 import jsudokusolver.core.PuzzlePositions;
 
@@ -27,7 +26,7 @@ public class CellFunctionsTest {
 			Set<Integer> positions = new HashSet<>();
 			final int position = i;
 			Predicate<Cell> predicate = predicateGenerator.apply(i);
-			p.getCells().stream().filter(predicate).forEach(c -> {
+			p.getCellsStream().filter(predicate).forEach(c -> {
 				assertEquals(position, cellToPosition.apply(c).intValue());
 				if (!positions.add(c.getRow())) {
 					fail("Repeated Row: " + c.getRow());
@@ -52,7 +51,7 @@ public class CellFunctionsTest {
 	@Test(expected = NoSuchElementException.class)
 	public void cellToValueInvalid() {
 		Cell c = new Cell(1, 1);
-		int value = CellFunctions.CELL_TO_VALUE.apply(c);
+		int value = Cell.CELL_TO_VALUE.apply(c);
 		fail(value + "");
 	}
 
@@ -60,20 +59,20 @@ public class CellFunctionsTest {
 	public void cellToValueValid() {
 		Cell c = new Cell(1, 1);
 		c.setValue(5);
-		assertEquals(5, CellFunctions.CELL_TO_VALUE.apply(c).intValue());
+		assertEquals(5, Cell.CELL_TO_VALUE.apply(c).intValue());
 	}
 
 	@Test
 	public void cellToValueOr0With0() {
 		Cell c = new Cell(1, 1);
-		assertEquals(0, CellFunctions.CELL_TO_VALUE_OR_0.apply(c).intValue());
+		assertEquals(0, Cell.CELL_TO_VALUE_OR_0.apply(c).intValue());
 	}
 
 	@Test
 	public void cellToValueOr0Valid() {
 		Cell c = new Cell(1, 1);
 		c.setValue(5);
-		assertEquals(5, CellFunctions.CELL_TO_VALUE_OR_0.apply(c).intValue());
+		assertEquals(5, Cell.CELL_TO_VALUE_OR_0.apply(c).intValue());
 	}
 
 	@Test
@@ -81,8 +80,8 @@ public class CellFunctionsTest {
 		Puzzle p = new Puzzle();
 		for (int i = 1; i <= 9; i++) {
 			Set<Integer> positions = new HashSet<>();
-			final int position = i;			
-			p.getCells().stream().filter(PuzzlePositions.COLUMN.getPositionPredicate(i)).forEach(c -> {
+			final int position = i;
+			p.getCellsStream().filter(PuzzlePositions.COLUMN.getPositionPredicate(i)).forEach(c -> {
 				assertEquals(position, c.getColumn());
 				if (!positions.add(c.getRow())) {
 					fail("Repeated Row: " + c.getRow());
@@ -97,7 +96,7 @@ public class CellFunctionsTest {
 		for (int i = 1; i <= 9; i++) {
 			Set<Integer> positions = new HashSet<>();
 			final int position = i;
-			p.getCells().stream().filter(PuzzlePositions.ROW.getPositionPredicate(i)).forEach(c -> {
+			p.getCellsStream().filter(PuzzlePositions.ROW.getPositionPredicate(i)).forEach(c -> {
 				assertEquals(position, c.getRow());
 				if (!positions.add(c.getColumn())) {
 					fail("Repeated Column: " + c.getColumn());
@@ -110,13 +109,9 @@ public class CellFunctionsTest {
 	public void testGetSectorPredicate() {
 		Puzzle p = new Puzzle();
 		for (int i = 1; i <= 9; i++) {
-//			Set<Integer> positions = new HashSet<>();
 			final int position = i;
-			p.getCells().stream().filter(PuzzlePositions.SECTOR.getPositionPredicate(i)).forEach(c -> {
+			p.getCellsStream().filter(PuzzlePositions.SECTOR.getPositionPredicate(i)).forEach(c -> {
 				assertEquals(position, c.getSector());
-//				if (!positions.add(c.getColumn())) {
-//					fail("Repeated Column: " + c.getColumn());
-//				}
 			});
 		}
 	}
