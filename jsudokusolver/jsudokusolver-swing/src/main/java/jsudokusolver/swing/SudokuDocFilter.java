@@ -50,8 +50,8 @@ class SudokuDocFilter extends DocumentFilter {
 			throws BadLocationException {
 		StringBuilder sb = getOldText(fb);
 		sb.replace(offset, offset + length, text);
-		System.out.println("SudokuDocFilter.replace() : " + sb);
 		if (verifyText(sb.toString(), true)) {
+			System.out.println("SudokuDocFilter.replace() : " + sb);
 			super.replace(fb, offset, length, text, attrs);
 		}
 	}
