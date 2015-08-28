@@ -22,6 +22,8 @@ import javax.swing.border.EmptyBorder;
 public class JSudokuSolver extends JFrame {
 
 	private static final long serialVersionUID = 5679272701185428271L;
+	
+	private static final Font FONT_DEFAULT = new Font("Tahoma", Font.PLAIN, 16);
 
 	private JPanel contentPane;
 	
@@ -47,7 +49,7 @@ public class JSudokuSolver extends JFrame {
 	 * Create the frame.
 	 */
 	public JSudokuSolver() {
-		setPreferredSize(new Dimension(372, 460));
+		setResizable(false);
 		addComponentListener(new ComponentAdapter() {
 			@Override
 			public void componentResized(ComponentEvent e) {
@@ -72,7 +74,7 @@ public class JSudokuSolver extends JFrame {
 		pnlControls.setLayout(new GridLayout(2, 3, 5, 5));
 
 		JButton btnRun = new JButton("Run");
-		btnRun.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		btnRun.setFont(FONT_DEFAULT);
 		btnRun.setMnemonic('R');
 		btnRun.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -81,26 +83,31 @@ public class JSudokuSolver extends JFrame {
 		pnlControls.add(btnRun);
 
 		JButton btnClean = new JButton("Clean");
+		btnClean.setFont(FONT_DEFAULT);
 		btnClean.setMnemonic('C');
 		btnClean.addActionListener(a -> this.getPanelPuzzle().cleanAll());
 		pnlControls.add(btnClean);
 
 		JButton btnStop = new JButton("Stop");
+		btnStop.setFont(FONT_DEFAULT);
 		btnStop.setEnabled(false);
 		btnStop.setMnemonic('S');
 		pnlControls.add(btnStop);
 
 		JLabel lblStep = new JLabel("Step Time");
+		lblStep.setFont(FONT_DEFAULT);
 		lblStep.setHorizontalAlignment(SwingConstants.RIGHT);
 		pnlControls.add(lblStep);
 
 		JComboBox cmbStepTime = new JComboBox();
+		cmbStepTime.setFont(FONT_DEFAULT);
 		lblStep.setLabelFor(cmbStepTime);
 		cmbStepTime
 				.setModel(new DefaultComboBoxModel(new String[] { "0", "1", "5", "10", "50", "100", "500", "1000" }));
 		pnlControls.add(cmbStepTime);
 
 		JLabel lblMs = new JLabel("ms");
+		lblMs.setFont(FONT_DEFAULT);
 		pnlControls.add(lblMs);
 	}
 	
