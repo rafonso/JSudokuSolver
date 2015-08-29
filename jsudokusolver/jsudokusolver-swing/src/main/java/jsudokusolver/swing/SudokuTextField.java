@@ -13,11 +13,10 @@ public class SudokuTextField extends JTextField implements FocusListener {
 
 	private static final long serialVersionUID = 1970097593494061829L;
 	
-	private static final Font FONT_DEFAULT = new Font("Tahoma", Font.PLAIN, 16);
 	@SuppressWarnings("unused")
-	private static final Font FONT_ORIGINAL = FONT_DEFAULT.deriveFont(Font.BOLD);
+	private static final Font FONT_ORIGINAL = Utils.FONT_DEFAULT.deriveFont(Font.BOLD);
 	@SuppressWarnings("unused")
-	private static final Font FONT_GUESS = FONT_DEFAULT.deriveFont(Font.ITALIC);
+	private static final Font FONT_GUESS = Utils.FONT_DEFAULT.deriveFont(Font.ITALIC);
 
 	private final int row;
 	private final int col;
@@ -40,8 +39,6 @@ public class SudokuTextField extends JTextField implements FocusListener {
 		int bottom = (row == 9) ? 3 : ((row == 3) || (row == 6)) ? 2 : 1;
 		int right = (col == 9) ? 3 : ((col == 3) || (col == 6)) ? 2 : 1;
 		super.setBorder(BorderFactory.createMatteBorder(top, left, bottom, right, Color.BLACK));
-		
-		super.setFont(FONT_DEFAULT);
 	}
 
 	int getPosition() {
