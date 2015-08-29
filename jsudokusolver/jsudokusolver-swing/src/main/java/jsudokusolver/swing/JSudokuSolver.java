@@ -46,17 +46,15 @@ public class JSudokuSolver extends JFrame {
 	 * Create the frame.
 	 */
 	public JSudokuSolver() {
+		setIconImage(Utils.getImage("jsudokusolver" + Utils.ICON_EXTENSION, 32));
 		setResizable(false);
 		addComponentListener(new ComponentAdapter() {
 			@Override
 			public void componentResized(ComponentEvent e) {
 				System.out.println("===========================");
 				System.out.println("FRAME: " + ((JFrame) e.getSource()).getSize());
-				// System.out.println("TEXTF: " +
-				// formattedTextField_11.getSize());
 			}
 		});
-//		setFont(new Font("SansSerif", Font.PLAIN, 12));
 		setTitle("Swing Sudoku Solver");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 332, 384);

@@ -3,13 +3,9 @@ package jsudokusolver.swing;
 import java.awt.CardLayout;
 import java.awt.Component;
 import java.awt.GridLayout;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.net.URL;
 
-import javax.imageio.ImageIO;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -23,13 +19,10 @@ public class PanelControls extends JPanel {
 
 	private static final long serialVersionUID = 1255801329328690203L;
 
-	private static final String ICON_PATH = "/icons/";
-	private static final String ICON_EXTENSION = ".png";
-	private static final String ICON_RUN = "appbar.control.play";
-	private static final String ICON_CLEAN = "appbar.clean";
-	private static final String ICON_STOP = "appbar.control.stop";
-	private static final String ICON_RESET = "appbar.reset";
-	private static final int ICON_SIZE = 24;
+	private static final String ICON_RUN = "appbar.control.play" + Utils.ICON_EXTENSION ;
+	private static final String ICON_CLEAN = "appbar.clean" + Utils.ICON_EXTENSION ;
+	private static final String ICON_STOP = "appbar.control.stop" + Utils.ICON_EXTENSION ;
+	private static final String ICON_RESET = "appbar.reset" + Utils.ICON_EXTENSION ;
 
 	private JButton btnRun;
 	private JButton btnStop;
@@ -54,18 +47,9 @@ public class PanelControls extends JPanel {
 		add(getCmbStepTime());
 		add(getLblMs());
 	}
-
+	
 	private ImageIcon getIcon(String iconName) {
-		try {
-			String iconPath = ICON_PATH + iconName + ICON_EXTENSION;
-			URL iconUrl = PanelControls.class.getResource(iconPath);
-			Image originalImage = ImageIO.read(iconUrl);
-			Image resizedImage = originalImage.getScaledInstance(ICON_SIZE, ICON_SIZE, Image.SCALE_SMOOTH);
-
-			return new ImageIcon(resizedImage);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+		return new ImageIcon(Utils.getImage(iconName, 24));
 	}
 
 	private JButton getBtnRun() {
