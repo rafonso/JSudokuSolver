@@ -3,10 +3,15 @@ package jsudokusolver.swing;
 import java.awt.CardLayout;
 import java.awt.Component;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.net.URL;
 
+import javax.imageio.ImageIO;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -17,6 +22,14 @@ import javax.swing.SwingConstants;
 public class PanelControls extends JPanel {
 
 	private static final long serialVersionUID = 1255801329328690203L;
+
+	private static final String ICON_PATH = "/icons/";
+	private static final String ICON_EXTENSION = ".png";
+	private static final String ICON_RUN = "appbar.control.play";
+	private static final String ICON_CLEAN = "appbar.clean";
+	private static final String ICON_STOP = "appbar.control.stop";
+	private static final String ICON_RESET = "appbar.reset";
+	private static final int ICON_SIZE = 24;
 
 	private JButton btnRun;
 	private JButton btnStop;
@@ -40,12 +53,25 @@ public class PanelControls extends JPanel {
 		add(getLblStepTime());
 		add(getCmbStepTime());
 		add(getLblMs());
+	}
 
+	private ImageIcon getIcon(String iconName) {
+		try {
+			String iconPath = ICON_PATH + iconName + ICON_EXTENSION;
+			URL iconUrl = PanelControls.class.getResource(iconPath);
+			Image originalImage = ImageIO.read(iconUrl);
+			Image resizedImage = originalImage.getScaledInstance(ICON_SIZE, ICON_SIZE, Image.SCALE_SMOOTH);
+
+			return new ImageIcon(resizedImage);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	private JButton getBtnRun() {
 		if (btnRun == null) {
 			btnRun = new JButton("Run");
+			btnRun.setIcon(this.getIcon(ICON_RUN));
 			btnRun.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					CardLayout cl = (CardLayout) getPnlStopReset().getLayout();
@@ -65,6 +91,7 @@ public class PanelControls extends JPanel {
 	private JButton getBtnStop() {
 		if (btnStop == null) {
 			btnStop = new JButton("Stop");
+			btnStop.setIcon(this.getIcon(ICON_STOP));
 			btnStop.setAlignmentX(Component.CENTER_ALIGNMENT);
 			btnStop.setMnemonic('S');
 		}
@@ -74,9 +101,19 @@ public class PanelControls extends JPanel {
 	private JButton getBtnClean() {
 		if (btnClean == null) {
 			btnClean = new JButton("Clean");
+			btnClean.setIcon(this.getIcon(ICON_CLEAN));
 			btnClean.setMnemonic('C');
 		}
 		return btnClean;
+	}
+
+	private JButton getBtnReset() {
+		if (btnReset == null) {
+			btnReset = new JButton("Reset");
+			btnReset.setIcon(this.getIcon(ICON_RESET));
+			btnReset.setMnemonic('e');
+		}
+		return btnReset;
 	}
 
 	private JLabel getLblStepTime() {
@@ -114,11 +151,4 @@ public class PanelControls extends JPanel {
 		return pnlStopReset;
 	}
 
-	private JButton getBtnReset() {
-		if (btnReset == null) {
-			btnReset = new JButton("Reset");
-			btnReset.setMnemonic('e');
-		}
-		return btnReset;
-	}
 }
