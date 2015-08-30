@@ -10,6 +10,8 @@ import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 
+import jsudokusolver.core.Puzzle;
+
 public class JSudokuSolver extends JFrame {
 
 	private static final long serialVersionUID = 5679272701185428271L;
@@ -19,6 +21,8 @@ public class JSudokuSolver extends JFrame {
 	private PanelPuzzle panelPuzzle;
 
 	private PanelControls panelControls;
+
+	private Puzzle puzzle = new Puzzle();
 
 	/**
 	 * Launch the application.
@@ -65,6 +69,13 @@ public class JSudokuSolver extends JFrame {
 
 		contentPane.add(this.getPanelPuzzle(), BorderLayout.CENTER);
 		contentPane.add(this.getPanelControls(), BorderLayout.SOUTH);
+
+		for (int i = 0; i < 81; i++) {
+			int row = (i / 9) + 1;
+			int col = (i % 9) + 1;
+			new CellTextFieldListener(this.puzzle, this.puzzle.getCell(row, col),
+					(SudokuTextField) this.getPanelPuzzle().getComponent(i));
+		}
 	}
 
 	private PanelPuzzle getPanelPuzzle() {

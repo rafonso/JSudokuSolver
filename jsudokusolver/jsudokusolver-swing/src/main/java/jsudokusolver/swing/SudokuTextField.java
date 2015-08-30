@@ -13,10 +13,11 @@ public class SudokuTextField extends JTextField implements FocusListener {
 
 	private static final long serialVersionUID = 1970097593494061829L;
 	
-	@SuppressWarnings("unused")
-	private static final Font FONT_ORIGINAL = Utils.FONT_DEFAULT.deriveFont(Font.BOLD);
-	@SuppressWarnings("unused")
-	private static final Font FONT_GUESS = Utils.FONT_DEFAULT.deriveFont(Font.ITALIC);
+	static final Font FONT_ORIGINAL = Utils.FONT_DEFAULT.deriveFont(Font.BOLD);
+	static final Font FONT_GUESS = Utils.FONT_DEFAULT.deriveFont(Font.ITALIC);
+	
+	static final Color COLOR_ERROR = Color.RED;
+	static final Color COLOR_EVALUATING = Color.YELLOW;
 
 	private final int row;
 	private final int col;

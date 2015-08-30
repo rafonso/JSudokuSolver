@@ -1,11 +1,24 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>${group.id}</groupId>
-    <artifactId>${artifact.id}</artifactId>
-    <version>${current.version}</version>
-  </parent>
-  <groupId>jsudokusolver.core</groupId>
-  <artifactId>jsudokusolver-swing</artifactId>
-  <name>jsudokusolver-swing</name>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>${group.id}</groupId>
+		<artifactId>${artifact.id}</artifactId>
+		<version>${current.version}</version>
+	</parent>
+	<groupId>jsudokusolver.swing</groupId>
+	<artifactId>jsudokusolver-swing</artifactId>
+	<name>jsudokusolver-swing</name>
+	<dependencies>
+		<dependency>
+			<groupId>jsudokusolver.core</groupId>
+			<artifactId>jsudokusolver-core</artifactId>
+			<version>${current.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>jsudokusolver.console</groupId>
+			<artifactId>jsudokusolver-console</artifactId>
+			<version>${current.version}</version>
+		</dependency>
+	</dependencies>
 </project>

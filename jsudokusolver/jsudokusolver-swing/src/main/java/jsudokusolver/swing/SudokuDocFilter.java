@@ -39,7 +39,7 @@ class SudokuDocFilter extends DocumentFilter {
 			throws BadLocationException {
 		StringBuilder sb = getOldText(fb);
 		sb.insert(offset, string);
-		System.out.println("SudokuDocFilter.insertString() : " + sb);
+//		System.out.println("SudokuDocFilter.insertString() : " + sb);
 		if (verifyText(sb.toString(), true)) {
 			super.insertString(fb, offset, string, attr);
 		}
@@ -51,7 +51,7 @@ class SudokuDocFilter extends DocumentFilter {
 		StringBuilder sb = getOldText(fb);
 		sb.replace(offset, offset + length, text);
 		if (verifyText(sb.toString(), true)) {
-			System.out.println("SudokuDocFilter.replace() : " + sb);
+//			System.out.println("SudokuDocFilter.replace() : " + sb);
 			super.replace(fb, offset, length, text, attrs);
 		}
 	}
@@ -60,7 +60,7 @@ class SudokuDocFilter extends DocumentFilter {
 	public void remove(FilterBypass fb, int offset, int length) throws BadLocationException {
 		StringBuilder sb = getOldText(fb);
 		sb.replace(offset, offset + length, "");
-		System.out.println("SudokuDocFilter.remove() : " + sb);
+//		System.out.println("SudokuDocFilter.remove() : " + sb);
 		if (verifyText(sb.toString(), false)) {
 			super.remove(fb, offset, length);
 		}
