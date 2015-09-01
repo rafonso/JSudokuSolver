@@ -49,6 +49,13 @@ public class Puzzle {
 	}
 
 	/**
+	 * @return This Puzzle Cells as a {@link Stream}
+	 */
+	Stream<Cell> getCellsStream() {
+		return this.cells.stream();
+	}
+
+	/**
 	 * Returns a {@link Cell} located in a Row and Column.
 	 * 
 	 * @param row
@@ -88,11 +95,11 @@ public class Puzzle {
 		this.pcs.firePropertyChange(PUZZLE_STATUS, old, status);
 	}
 
-	/**
-	 * @return This Puzzle Cells as a {@link Stream}
-	 */
-	Stream<Cell> getCellsStream() {
-		return this.cells.stream();
+	public void cleanCells() {
+		assert(this.status == PuzzleStatus.INVALID) || (this.status == PuzzleStatus.SOLVED)
+				|| (this.status == PuzzleStatus.WAITING);
+
+		this.getCellsStream().forEach(c -> c.setValueStatus(null, CellStatus.IDLE));
 	}
 
 	/**
@@ -113,6 +120,26 @@ public class Puzzle {
 	 */
 	public void removePropertyChangeListener(PropertyChangeListener listener) {
 		this.pcs.removePropertyChangeListener(listener);
+	}
+
+	public void parse(String str) {
+		assert(this.status == PuzzleStatus.WAITING);
+		if (!str.matches("^(\\d|.)+$")) {
+			throw new IllegalArgumentException("Invalid Puzzle: " + str);
+		}
+		char[] digits = str.replaceAll("\\.", "").toCharArray();
+		if (digits.length != 81) {
+			throw new IllegalArgumentException("Puzzle should have 81 digits! " + str);
+		}
+
+		for (int pos = 0; pos < digits.length; pos++) {
+			int digit = digits[pos] - '0';
+			if (digit > 0) {
+				int[] position = Cell.valueToPositions(pos);
+				this.getCell(position[0], position[1]).setValueStatus(digit, CellStatus.ORIGINAL);
+			}
+		}
+
 	}
 
 	/**

@@ -3,8 +3,6 @@ package jsudokusolver.console;
 import java.time.Instant;
 import java.util.Scanner;
 
-import jsudokusolver.core.Cell;
-import jsudokusolver.core.CellStatus;
 import jsudokusolver.core.Puzzle;
 import jsudokusolver.core.Solver;
 import jsudokusolver.core.Validator;
@@ -16,24 +14,13 @@ public class SudokuSolver {
 	}
 
 	private static final Puzzle commandToPuzzle(String str, ConsoleListener listener) {
-		if (!str.matches("^(\\d|.)+$")) {
-			throw new IllegalArgumentException("Invalid Puzzle");
-		}
-		String digits = str.replaceAll("\\.", "");
-		if (digits.length() != 81) {
-			throw new IllegalArgumentException("it should have 81 digits!");
-		}
-
 		Puzzle p = new Puzzle();
-		p.addPropertyChangeListener(listener);
-		for (int pos = 0; pos < digits.toCharArray().length; pos++) {
-			final Cell cell = p.getCell((pos / 9) + 1, (pos % 9) + 1);
-			cell.addPropertyChangeListener(listener);
 
-			int digit = digits.toCharArray()[pos] - '0';
-			if (digit > 0) {
-				cell.setValue(digit);
-				cell.setStatus(CellStatus.ORIGINAL);
+		p.parse(str);
+		p.addPropertyChangeListener(listener);
+		for (int row = 1; row <= 9; row++) {
+			for (int col = 1; col <= 9; col++) {
+				p.getCell(row, col).addPropertyChangeListener(listener);
 			}
 		}
 

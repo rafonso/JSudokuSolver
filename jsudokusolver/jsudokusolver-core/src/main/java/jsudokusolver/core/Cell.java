@@ -262,4 +262,18 @@ public class Cell implements Cloneable {
 		return new Cell(row, column);
 	}
 
+	/**
+	 * Given a number from 0 to 80, it returns the equivalent {@link #getRow()
+	 * Row} and {@link #getColumn() Column} in Puzzle.
+	 * 
+	 * @param value
+	 *            The number
+	 * @return The equivalent Row and Column in Puzzle.
+	 */
+	public static int[] valueToPositions(int value) {
+		assert(value >= 0) && (value < 81);
+
+		return new int[] { (value / 9) + 1, (value % 9) + 1 };
+	}
+
 }
