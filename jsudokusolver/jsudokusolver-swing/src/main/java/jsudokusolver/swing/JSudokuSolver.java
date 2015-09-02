@@ -10,6 +10,8 @@ import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 
+import jsudokusolver.console.ConsoleListener;
+import jsudokusolver.core.Cell;
 import jsudokusolver.core.Puzzle;
 
 public class JSudokuSolver extends JFrame {
@@ -70,12 +72,16 @@ public class JSudokuSolver extends JFrame {
 		contentPane.add(this.getPanelPuzzle(), BorderLayout.CENTER);
 		contentPane.add(this.getPanelControls(), BorderLayout.SOUTH);
 
+		ConsoleListener logger = new ConsoleListener();
+		this.puzzle.addPropertyChangeListener(logger);
 		for (int i = 0; i < 81; i++) {
-			int row = (i / 9) + 1;
-			int col = (i % 9) + 1;
-			new CellTextFieldListener(this.puzzle, this.puzzle.getCell(row, col),
+			int[] rowCol = Cell.valueToPositions(i);
+			final Cell cell = this.puzzle.getCell(rowCol[0], rowCol[1]);
+			cell.addPropertyChangeListener(logger);
+			new CellTextFieldListener(this.puzzle, cell,
 					(SudokuTextField) this.getPanelPuzzle().getComponent(i));
 		}
+		new PuzzlePanelControlsListener(this.puzzle, getPanelControls());
 	}
 
 	private PanelPuzzle getPanelPuzzle() {

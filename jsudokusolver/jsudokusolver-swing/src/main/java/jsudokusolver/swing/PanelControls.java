@@ -3,8 +3,6 @@ package jsudokusolver.swing;
 import java.awt.CardLayout;
 import java.awt.Component;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
@@ -17,12 +15,16 @@ import javax.swing.SwingConstants;
 
 public class PanelControls extends JPanel {
 
+	enum ButtonToShow {
+		STOP, RESET
+	}
+
 	private static final long serialVersionUID = 1255801329328690203L;
 
-	private static final String ICON_RUN = "appbar.control.play" + Utils.ICON_EXTENSION ;
-	private static final String ICON_CLEAN = "appbar.clean" + Utils.ICON_EXTENSION ;
-	private static final String ICON_STOP = "appbar.control.stop" + Utils.ICON_EXTENSION ;
-	private static final String ICON_RESET = "appbar.reset" + Utils.ICON_EXTENSION ;
+	private static final String ICON_RUN = "appbar.control.play" + Utils.ICON_EXTENSION;
+	private static final String ICON_CLEAN = "appbar.clean" + Utils.ICON_EXTENSION;
+	private static final String ICON_STOP = "appbar.control.stop" + Utils.ICON_EXTENSION;
+	private static final String ICON_RESET = "appbar.reset" + Utils.ICON_EXTENSION;
 
 	private JButton btnRun;
 	private JButton btnStop;
@@ -32,8 +34,6 @@ public class PanelControls extends JPanel {
 	private JLabel lblMs;
 	private JLayeredPane pnlStopReset;
 	private JButton btnReset;
-
-	private boolean stopInFront = true;
 
 	/**
 	 * Create the panel.
@@ -47,34 +47,25 @@ public class PanelControls extends JPanel {
 		add(getCmbStepTime());
 		add(getLblMs());
 	}
-	
+
 	private ImageIcon getIcon(String iconName) {
 		return new ImageIcon(Utils.getImage(iconName, 24));
 	}
 
-	private JButton getBtnRun() {
+	JButton getBtnRun() {
 		if (btnRun == null) {
 			btnRun = new JButton("Run");
+			btnRun.setName("btnRun");
 			btnRun.setIcon(this.getIcon(ICON_RUN));
-			btnRun.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					CardLayout cl = (CardLayout) getPnlStopReset().getLayout();
-					if (stopInFront) {
-						cl.show(getPnlStopReset(), "btnReset");
-					} else {
-						cl.show(getPnlStopReset(), "btnStop");
-					}
-					stopInFront = !stopInFront;
-				}
-			});
 			btnRun.setMnemonic('R');
 		}
 		return btnRun;
 	}
 
-	private JButton getBtnStop() {
+	JButton getBtnStop() {
 		if (btnStop == null) {
 			btnStop = new JButton("Stop");
+			btnStop.setName("btnStop");
 			btnStop.setIcon(this.getIcon(ICON_STOP));
 			btnStop.setAlignmentX(Component.CENTER_ALIGNMENT);
 			btnStop.setMnemonic('S');
@@ -82,18 +73,20 @@ public class PanelControls extends JPanel {
 		return btnStop;
 	}
 
-	private JButton getBtnClean() {
+	JButton getBtnClean() {
 		if (btnClean == null) {
 			btnClean = new JButton("Clean");
+			btnClean.setName("btnClean");
 			btnClean.setIcon(this.getIcon(ICON_CLEAN));
 			btnClean.setMnemonic('C');
 		}
 		return btnClean;
 	}
 
-	private JButton getBtnReset() {
+	JButton getBtnReset() {
 		if (btnReset == null) {
 			btnReset = new JButton("Reset");
+			btnReset.setName("btnReset");
 			btnReset.setIcon(this.getIcon(ICON_RESET));
 			btnReset.setMnemonic('e');
 		}
@@ -109,9 +102,10 @@ public class PanelControls extends JPanel {
 		return lblStepTime;
 	}
 
-	private JComboBox<Integer> getCmbStepTime() {
+	JComboBox<Integer> getCmbStepTime() {
 		if (cmbStepTime == null) {
 			cmbStepTime = new JComboBox<Integer>();
+			cmbStepTime.setName("cmbStepTime");
 			cmbStepTime.setModel(new DefaultComboBoxModel<Integer>(new Integer[] { 0, 1, 5, 10, 50, 100, 500, 1000 }));
 			((JLabel) cmbStepTime.getRenderer()).setHorizontalAlignment(SwingConstants.RIGHT);
 		}
@@ -125,7 +119,7 @@ public class PanelControls extends JPanel {
 		return lblMs;
 	}
 
-	private JLayeredPane getPnlStopReset() {
+	JLayeredPane getPnlStopReset() {
 		if (pnlStopReset == null) {
 			pnlStopReset = new JLayeredPane();
 			pnlStopReset.setLayout(new CardLayout(0, 0));
@@ -133,6 +127,15 @@ public class PanelControls extends JPanel {
 			pnlStopReset.add(getBtnReset(), "btnReset");
 		}
 		return pnlStopReset;
+	}
+
+	void showButton(ButtonToShow buttonToShow) {
+		CardLayout cl = (CardLayout) getPnlStopReset().getLayout();
+		if (buttonToShow == ButtonToShow.STOP) {
+			cl.show(getPnlStopReset(), "btnStop");
+		} else {
+			cl.show(getPnlStopReset(), "btnReset");
+		}
 	}
 
 }

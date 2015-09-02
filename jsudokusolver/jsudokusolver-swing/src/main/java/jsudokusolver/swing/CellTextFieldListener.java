@@ -2,6 +2,7 @@ package jsudokusolver.swing;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Optional;
 
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -37,6 +38,18 @@ class CellTextFieldListener implements PropertyChangeListener, DocumentListener 
 		puzzle.addPropertyChangeListener(this);
 	}
 
+	private void changeTextField(PropertyChangeEvent evt) {
+		@SuppressWarnings("unchecked")
+		Optional<Integer> value = (Optional<Integer>) evt.getNewValue();
+		String str = value.isPresent() ? value.get().toString() : "";
+		// Verification seen in http://stackoverflow.com/a/11743648/1659543 to
+		// avoid "java.lang.IllegalStateException: Attempt to mutate in
+		// notification"
+		if (!str.equals(this.textField.getText())) {
+			this.textField.setText(str);
+		}
+	}
+
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		System.out.println("CellTextFieldListener.propertyChange() " + evt.getPropertyName() + ": " + evt.getOldValue()
@@ -49,6 +62,12 @@ class CellTextFieldListener implements PropertyChangeListener, DocumentListener 
 				break;
 			case ERROR:
 				this.textField.setBackground(SudokuTextField.COLOR_ERROR);
+				this.textField.requestFocusInWindow();
+				break;
+			case IDLE:
+				if (evt.getOldValue().equals(CellStatus.ERROR)) {
+					this.textField.setBackground(SudokuTextField.COLOR_DEFAULT);
+				}
 				break;
 			default:
 				this.textField.setFont(Utils.FONT_DEFAULT);
@@ -56,14 +75,22 @@ class CellTextFieldListener implements PropertyChangeListener, DocumentListener 
 			}
 			break;
 		case Cell.CELL_VALUE:
-
+			this.changeTextField(evt);
 			break;
-		default:
-			if (evt.getOldValue() != null) {
-				throw new IllegalStateException("Unexpected Property Change: " + evt);
+		case Puzzle.PUZZLE_STATUS:
+			PuzzleStatus puzzleStatus = (PuzzleStatus) evt.getNewValue();
+			switch (puzzleStatus) {
+			case RUNNING:
+			case SOLVED:
+			case STOPPED:
+			case VALIDATING:
+				this.textField.setEditable(false);
+				break;
+			default:
+				this.textField.setEditable(true);
+				break;
 			}
 		}
-
 	}
 
 	@Override
@@ -72,7 +99,8 @@ class CellTextFieldListener implements PropertyChangeListener, DocumentListener 
 			try {
 				final Document document = e.getDocument();
 				final String text = document.getText(0, document.getLength());
-				System.out.println("CellTextFieldListener.insertUpdate() " + text);
+				// System.out.println("CellTextFieldListener.insertUpdate() " +
+				// text);
 				this.cell.setValueStatus(Integer.valueOf(text), CellStatus.ORIGINAL);
 			} catch (BadLocationException e1) {
 				throw new RuntimeException("Problem in " + this.textField.getName() + ": " + e1.getMessage(), e1);

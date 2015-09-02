@@ -16,6 +16,7 @@ public class SudokuTextField extends JTextField implements FocusListener {
 	static final Font FONT_ORIGINAL = Utils.FONT_DEFAULT.deriveFont(Font.BOLD);
 	static final Font FONT_GUESS = Utils.FONT_DEFAULT.deriveFont(Font.ITALIC);
 	
+	static final Color COLOR_DEFAULT = Color.WHITE;
 	static final Color COLOR_ERROR = Color.RED;
 	static final Color COLOR_EVALUATING = Color.YELLOW;
 
