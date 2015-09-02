@@ -7,6 +7,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 
 import java.beans.PropertyChangeEvent;
+import java.util.function.Predicate;
 
 import org.junit.Test;
 
@@ -19,6 +20,7 @@ public class PuzzleTest {
 	@Test
 	public void puzzleCreation() {
 		Puzzle p = new Puzzle();
+
 		assertSame(PuzzleStatus.WAITING, p.getStatus());
 		assertEquals("000000000.000000000.000000000.000000000.000000000.000000000.000000000.000000000.000000000",
 				p.formatCells());
@@ -27,6 +29,7 @@ public class PuzzleTest {
 	@Test(expected = AssertionError.class)
 	public void setNullStatus() {
 		Puzzle p = new Puzzle();
+
 		p.setStatus(null);
 
 		fail(p.toString());
@@ -81,25 +84,30 @@ public class PuzzleTest {
 	public void parseInvalidStatus() {
 		Puzzle p = new Puzzle();
 		p.setStatus(PuzzleStatus.READY);
+
 		p.parse("1234");
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void parseInvalidString() {
 		Puzzle p = new Puzzle();
+
 		p.parse("ASDFGHJKL");
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void parseInvalidLenght() {
 		Puzzle p = new Puzzle();
+
 		p.parse("123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890");
 	}
 
 	@Test
 	public void parseValid() {
 		Puzzle p = new Puzzle();
+
 		p.parse("123456789012345678901234567890123456789012345678901234567890123456789012345678901");
+
 		assertEquals("123456789.012345678.901234567.890123456.789012345.678901234.567890123.456789012.345678901",
 				p.formatCells());
 	}
@@ -108,6 +116,7 @@ public class PuzzleTest {
 	public void cleanCellsInvalidStates() {
 		Puzzle p = new Puzzle();
 		p.setStatus(PuzzleStatus.RUNNING);
+
 		p.cleanCells();
 	}
 
@@ -125,6 +134,43 @@ public class PuzzleTest {
 			assertSame("Cell " + c + " should be in Status IDLE but was " + c.getStatus(), CellStatus.IDLE,
 					c.getStatus());
 		}
+	}
+
+	@Test(expected = AssertionError.class)
+	public void resetAtRunningStatus() {
+		Puzzle p = new Puzzle();
+		p.setStatus(PuzzleStatus.RUNNING);
+
+		p.reset();
+	}
+
+	@Test
+	public void resetAtValidStatus() {
+		Puzzle p = new Puzzle();
+		final String str = "000090310.004000705.020008946.000002400.300800007.007500000.453900060.708000100.091030000";
+		p.parse(str);
+		p.getCell(1, 1).setValueStatus(1, CellStatus.FILLED);
+		p.getCell(2, 2).setValueStatus(2, CellStatus.FILLED);
+		p.getCell(3, 3).setValueStatus(3, CellStatus.FILLED);
+		p.getCell(4, 4).setValueStatus(4, CellStatus.FILLED);
+		p.getCell(5, 5).setValueStatus(5, CellStatus.FILLED);
+		p.getCell(6, 6).setValueStatus(6, CellStatus.FILLED);
+		p.getCell(7, 7).setValueStatus(7, CellStatus.FILLED);
+		p.getCell(8, 8).setValueStatus(8, CellStatus.FILLED);
+		p.getCell(9, 9).setValueStatus(9, CellStatus.FILLED);
+
+		p.reset();
+
+		p.getCellsStream().filter(c -> (c.getRow() == c.getColumn())).forEach(c -> {
+			assertFalse(c.toString(), c.hasValue());
+			assertEquals(c.toString(), CellStatus.IDLE, c.getStatus());
+		});
+		p.getCellsStream().filter(Cell::hasValue).forEach(c -> {
+			assertEquals(c.toString(), CellStatus.ORIGINAL, c.getStatus());
+		});
+		p.getCellsStream().filter(((Predicate<Cell>) Cell::hasValue).negate()).forEach(c -> {
+			assertEquals(c.toString(), CellStatus.IDLE, c.getStatus());
+		});
 	}
 
 }

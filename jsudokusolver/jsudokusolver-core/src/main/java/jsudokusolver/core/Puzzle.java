@@ -102,6 +102,14 @@ public class Puzzle {
 		this.getCellsStream().forEach(c -> c.setValueStatus(null, CellStatus.IDLE));
 	}
 
+	public void reset() {
+		assert(this.status != PuzzleStatus.RUNNING);
+
+		this.getCellsStream() //
+				.filter(c -> (c.getStatus() != CellStatus.ORIGINAL))
+				.forEach(c -> c.setValueStatus(null, CellStatus.IDLE));
+	}
+
 	/**
 	 * Adds a apropriate {@link PropertyChangeListener Listener} to this Puzzle.
 	 * 
