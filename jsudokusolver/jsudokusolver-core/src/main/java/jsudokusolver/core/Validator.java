@@ -35,6 +35,9 @@ public class Validator {
 				final Integer value = c.getValue().get();
 				if (cellsByValue[value] != null) {
 					p.setStatus(PuzzleStatus.INVALID);
+					cellsByValue[value].setStatus(CellStatus.ERROR);
+					c.setStatus(CellStatus.ERROR);
+
 					throw new RepeatedCellsException(puzzlePositions, pos, cellsByValue[value], c);
 				}
 				cellsByValue[value] = c;

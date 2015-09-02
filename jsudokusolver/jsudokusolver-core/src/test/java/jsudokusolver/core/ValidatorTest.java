@@ -1,6 +1,7 @@
 package jsudokusolver.core;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
 
@@ -88,6 +89,8 @@ public class ValidatorTest {
 		Puzzle p = this.getSamplePuzzle();
 		p.addPropertyChangeListener(this.addValidationListening(p, PuzzleStatus.READY));
 		this.validator.validate(p);
+		p.getCellsStream().forEach(
+				c -> assertNotEquals("Status of cell " + c + " must not be ERROR", CellStatus.ERROR, c.getStatus()));
 	}
 
 	@Test
@@ -105,10 +108,12 @@ public class ValidatorTest {
 			assertEquals(1, e.getRepeatedValue());
 			assertEquals(6, e.getPosition());
 
+			assertEquals(CellStatus.ERROR, e.getCell1().getStatus());
 			assertEquals(6, e.getCell1().getRow());
 			assertEquals(3, e.getCell1().getColumn());
 			assertEquals(1, e.getCell1().getValue().get().intValue());
 
+			assertEquals(CellStatus.ERROR, e.getCell2().getStatus());
 			assertEquals(6, e.getCell2().getRow());
 			assertEquals(6, e.getCell2().getColumn());
 			assertEquals(1, e.getCell2().getValue().get().intValue());
@@ -130,10 +135,12 @@ public class ValidatorTest {
 			assertEquals(3, e.getRepeatedValue());
 			assertEquals(8, e.getPosition());
 
+			assertEquals(CellStatus.ERROR, e.getCell1().getStatus());
 			assertEquals(6, e.getCell1().getRow());
 			assertEquals(8, e.getCell1().getColumn());
 			assertEquals(3, e.getCell1().getValue().get().intValue());
 
+			assertEquals(CellStatus.ERROR, e.getCell2().getStatus());
 			assertEquals(8, e.getCell2().getRow());
 			assertEquals(8, e.getCell2().getColumn());
 			assertEquals(3, e.getCell2().getValue().get().intValue());
@@ -155,10 +162,12 @@ public class ValidatorTest {
 			assertEquals(4, e.getRepeatedValue());
 			assertEquals(6, e.getPosition());
 
+			assertEquals(CellStatus.ERROR, e.getCell1().getStatus());
 			assertEquals(4, e.getCell1().getRow());
 			assertEquals(8, e.getCell1().getColumn());
 			assertEquals(4, e.getCell1().getValue().get().intValue());
 
+			assertEquals(CellStatus.ERROR, e.getCell2().getStatus());
 			assertEquals(6, e.getCell2().getRow());
 			assertEquals(9, e.getCell2().getColumn());
 			assertEquals(4, e.getCell2().getValue().get().intValue());
