@@ -10,7 +10,9 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -46,6 +48,15 @@ public class Puzzle {
 
 		this.cells = Collections.unmodifiableList(cellsStream.collect(Collectors.toList()));
 		this.status = PuzzleStatus.WAITING;
+	}
+
+	private void clean(Predicate<Cell> predicate, boolean validStatus) {
+		assert validStatus : "Invalid Puzzle Status: " + this.status;
+
+		this.getCellsStream() //
+				.filter(predicate) //
+				.forEach(c -> c.setValueStatus(null, CellStatus.IDLE));
+		this.setStatus(PuzzleStatus.WAITING);
 	}
 
 	/**
@@ -95,19 +106,27 @@ public class Puzzle {
 		this.pcs.firePropertyChange(PUZZLE_STATUS, old, status);
 	}
 
+	/**
+	 * Clean all {@link Cell}s, setting these values and status to
+	 * {@link Optional#empty() empty} and {@link CellStatus#IDLE}, and sets
+	 * Puzzle status to {@link PuzzleStatus#WAITING}.
+	 */
 	public void cleanCells() {
-		assert(this.status == PuzzleStatus.INVALID) || (this.status == PuzzleStatus.SOLVED)
-				|| (this.status == PuzzleStatus.WAITING);
-
-		this.getCellsStream().forEach(c -> c.setValueStatus(null, CellStatus.IDLE));
+		this.clean(c -> true, //
+				(this.status == PuzzleStatus.INVALID) || (this.status == PuzzleStatus.SOLVED)
+						|| (this.status == PuzzleStatus.WAITING));
 	}
 
+	/**
+	 * Clean all {@link Cell}s that are not {@link CellStatus#ORIGINAL}, setting
+	 * these values and status to {@link Optional#empty() empty} and
+	 * {@link CellStatus#IDLE}, and sets Puzzle status to
+	 * {@link PuzzleStatus#WAITING}. This way, it will be possible to re-run the
+	 * solver with the same puzzle.
+	 */
 	public void reset() {
-		assert(this.status != PuzzleStatus.RUNNING);
-
-		this.getCellsStream() //
-				.filter(c -> (c.getStatus() != CellStatus.ORIGINAL))
-				.forEach(c -> c.setValueStatus(null, CellStatus.IDLE));
+		this.clean(c -> (c.getStatus() != CellStatus.ORIGINAL), //
+				this.status != PuzzleStatus.RUNNING);
 	}
 
 	/**

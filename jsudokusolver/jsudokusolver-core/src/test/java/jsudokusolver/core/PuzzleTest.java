@@ -124,6 +124,7 @@ public class PuzzleTest {
 	public void cleanCellsValidStates() {
 		Puzzle p = new Puzzle();
 		p.parse("123456789012345678901234567890123456789012345678901234567890123456789012345678901");
+		p.setStatus(PuzzleStatus.SOLVED);
 
 		p.cleanCells();
 
@@ -134,6 +135,7 @@ public class PuzzleTest {
 			assertSame("Cell " + c + " should be in Status IDLE but was " + c.getStatus(), CellStatus.IDLE,
 					c.getStatus());
 		}
+		assertEquals(PuzzleStatus.WAITING, p.getStatus());
 	}
 
 	@Test(expected = AssertionError.class)
@@ -158,6 +160,7 @@ public class PuzzleTest {
 		p.getCell(7, 7).setValueStatus(7, CellStatus.FILLED);
 		p.getCell(8, 8).setValueStatus(8, CellStatus.FILLED);
 		p.getCell(9, 9).setValueStatus(9, CellStatus.FILLED);
+		p.setStatus(PuzzleStatus.SOLVED);
 
 		p.reset();
 
@@ -171,6 +174,7 @@ public class PuzzleTest {
 		p.getCellsStream().filter(((Predicate<Cell>) Cell::hasValue).negate()).forEach(c -> {
 			assertEquals(c.toString(), CellStatus.IDLE, c.getStatus());
 		});
+		assertEquals(PuzzleStatus.WAITING, p.getStatus());
 	}
 
 }
