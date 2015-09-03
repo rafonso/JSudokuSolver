@@ -4,12 +4,16 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Random;
 
-import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 
+import jsudokusolver.core.Cell;
+import jsudokusolver.core.CellStatus;
 import jsudokusolver.core.InvalidPuzzleException;
 import jsudokusolver.core.Puzzle;
 import jsudokusolver.core.PuzzleStatus;
@@ -23,8 +27,6 @@ public class PuzzlePanelControlsListener implements PropertyChangeListener, Acti
 
 	private final PanelControls panelControls;
 
-	private boolean stopInFront = true;
-
 	PuzzlePanelControlsListener(Puzzle puzzle, PanelControls panelControls) {
 		super();
 		this.puzzle = puzzle;
@@ -36,6 +38,26 @@ public class PuzzlePanelControlsListener implements PropertyChangeListener, Acti
 		this.panelControls.getBtnRun().addActionListener(this);
 		this.panelControls.getBtnStop().addActionListener(this);
 		this.panelControls.getCmbStepTime().addItemListener(this);
+
+		this.panelControls.addMouseListener(new MouseAdapter() {
+			// Just to simulate cell filling while running
+			Random random = new Random();
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (e.getClickCount() == 2) {
+					boolean fill = false;
+					while (!fill) {
+						Cell c = PuzzlePanelControlsListener.this.puzzle.getCell(random.nextInt(9) + 1,
+								random.nextInt(9) + 1);
+						if (!c.hasValue()) {
+							c.setValueStatus(random.nextInt(9) + 1, CellStatus.FILLED);
+							fill = true;
+						}
+					}
+				}
+			}
+		});
 	}
 
 	private void startSolver() {
@@ -55,28 +77,25 @@ public class PuzzlePanelControlsListener implements PropertyChangeListener, Acti
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		final JComponent jComponent = (JComponent) e.getSource();
-		System.out.println("PuzzlePanelControlsListener.actionPerformed(): " + jComponent.getName());
+//		final JComponent jComponent = (JComponent) e.getSource();
+//		System.out.println("PuzzlePanelControlsListener.actionPerformed(): " + jComponent.getName());
 		if (e.getSource() == this.panelControls.getBtnClean()) {
 			this.puzzle.cleanCells();
 		} else if (e.getSource() == this.panelControls.getBtnReset()) {
-			System.out.println("RESET!");
+			this.puzzle.reset();
 		} else if (e.getSource() == this.panelControls.getBtnRun()) {
-			System.out.println("RUN!");
-			this.panelControls.showButton(this.stopInFront ? ButtonToShow.RESET : ButtonToShow.STOP);
-			this.stopInFront = !this.stopInFront;
 			this.startSolver();
 		} else if (e.getSource() == this.panelControls.getBtnStop()) {
-			System.out.println("STOP!");
+			this.puzzle.setStatus(PuzzleStatus.STOPPED);
 		}
 	}
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-		if(!evt.getPropertyName().equals(Puzzle.PUZZLE_STATUS)) {
+		if (!evt.getPropertyName().equals(Puzzle.PUZZLE_STATUS)) {
 			return;
 		}
-		
+
 		PuzzleStatus newStatus = (PuzzleStatus) evt.getNewValue();
 		switch (newStatus) {
 		case INVALID:
@@ -104,7 +123,11 @@ public class PuzzlePanelControlsListener implements PropertyChangeListener, Acti
 			this.panelControls.showButton(ButtonToShow.RESET);
 			break;
 		case STOPPED:
-			// ????
+			this.panelControls.getBtnRun().setEnabled(true);
+			this.panelControls.getBtnClean().setEnabled(true);
+			this.panelControls.getBtnStop().setEnabled(false);
+			this.panelControls.getBtnReset().setEnabled(true);
+			this.panelControls.showButton(ButtonToShow.RESET);
 			break;
 		}
 	}
@@ -114,7 +137,6 @@ public class PuzzlePanelControlsListener implements PropertyChangeListener, Acti
 		if (e.getStateChange() == ItemEvent.SELECTED) {
 			System.out.println("PuzzlePanelControlsListener.itemStateChanged(): " + e.getItem());
 		}
-
 	}
 
 }

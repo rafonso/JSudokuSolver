@@ -65,6 +65,7 @@ public class PanelControls extends JPanel {
 	JButton getBtnStop() {
 		if (btnStop == null) {
 			btnStop = new JButton("Stop");
+			btnStop.setEnabled(false);
 			btnStop.setName("btnStop");
 			btnStop.setIcon(this.getIcon(ICON_STOP));
 			btnStop.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -86,6 +87,7 @@ public class PanelControls extends JPanel {
 	JButton getBtnReset() {
 		if (btnReset == null) {
 			btnReset = new JButton("Reset");
+			btnReset.setEnabled(false);
 			btnReset.setName("btnReset");
 			btnReset.setIcon(this.getIcon(ICON_RESET));
 			btnReset.setMnemonic('e');
