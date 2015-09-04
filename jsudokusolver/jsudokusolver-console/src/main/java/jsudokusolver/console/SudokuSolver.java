@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.util.Scanner;
 
 import jsudokusolver.core.Puzzle;
+import jsudokusolver.core.Puzzle.CellsFormatter;
 import jsudokusolver.core.Solver;
 import jsudokusolver.core.Validator;
 
@@ -46,7 +47,7 @@ public class SudokuSolver {
 			sc.nextLine();
 		}
 
-		System.out.println("Solving Puzzle: " + puzzle.formatCells());
+		System.out.println("Solving Puzzle: " + puzzle.formatCells(CellsFormatter.ALL));
 
 		final Solver solver = new Solver();
 		solver.addPropertyChangeListener(listener);
@@ -57,7 +58,7 @@ public class SudokuSolver {
 		Instant t1 = Instant.now();
 
 		// System.out.println(formatPuzzle(puzzle));
-		System.out.println("Puzzle Solved: " + puzzle.formatCells());
+		System.out.println("Puzzle Solved: " + puzzle.formatCells(CellsFormatter.ALL));
 		System.out.printf("Time: %d ms", (t1.toEpochMilli() - t0.toEpochMilli()));
 	}
 

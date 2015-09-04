@@ -30,6 +30,9 @@ public class Cell implements Cloneable {
 	 */
 	static final Function<Cell, Integer> CELL_TO_VALUE_OR_0 = CELL_TO_OPT_VALUE.andThen(o -> o.orElse(0));
 
+	static final Function<Cell, Integer> ORIGINAL_CELL_TO_VALUE_OR_0 = (c -> (c.getStatus() == CellStatus.ORIGINAL)
+			? c.getValue().get() : 0);
+
 	/**
 	 * Indicate a no-value for a Cell.
 	 * 

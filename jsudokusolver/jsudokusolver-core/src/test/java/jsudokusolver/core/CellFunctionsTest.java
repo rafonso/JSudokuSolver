@@ -76,6 +76,22 @@ public class CellFunctionsTest {
 	}
 
 	@Test
+	public void originalCellToValueOr0WithFilled() {
+		Cell c = new Cell(1, 1);
+		c.setValueStatus(5, CellStatus.FILLED);
+
+		assertEquals(0, Cell.ORIGINAL_CELL_TO_VALUE_OR_0.apply(c).intValue());
+	}
+
+	@Test
+	public void originalCellToValueOr0WithOriginal() {
+		Cell c = new Cell(1, 1);
+		c.setValueStatus(5, CellStatus.ORIGINAL);
+
+		assertEquals(5, Cell.ORIGINAL_CELL_TO_VALUE_OR_0.apply(c).intValue());
+	}
+
+	@Test
 	public void testGetColumnPredicate() {
 		Puzzle p = new Puzzle();
 		for (int i = 1; i <= 9; i++) {

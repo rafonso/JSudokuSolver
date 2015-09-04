@@ -1,6 +1,7 @@
 package jsudokusolver.core;
 
 import static jsudokusolver.core.Cell.CELL_TO_VALUE_OR_0;
+import static jsudokusolver.core.Cell.ORIGINAL_CELL_TO_VALUE_OR_0;
 import static jsudokusolver.core.CellFunctions.rangeStream;
 import static jsudokusolver.core.CellFunctions.validateRange;
 import static jsudokusolver.core.PuzzlePositions.ROW;
@@ -22,15 +23,35 @@ import java.util.stream.Stream;
 public class Puzzle {
 
 	/**
+	 * Defines how the {@link Cell} value will be shown in
+	 * {@link Puzzle#formatCells(CellsFormatter)}
+	 */
+	public enum CellsFormatter {
+		/**
+		 * If a {@link Cell} is Filled, its value will be shown, otherwise it
+		 * will be shown 0.
+		 * 
+		 * @see Cell#hasValue()
+		 */
+		ALL(CELL_TO_VALUE_OR_0), //
+		/**
+		 * If a {@link Cell} Status is {@link CellStatus#ORIGINAL}, its value
+		 * will be shown, otherwise it will be shown 0.
+		 */
+		ORIGINALS(ORIGINAL_CELL_TO_VALUE_OR_0);
+
+		final Function<Cell, Integer> cellToInt;
+
+		private CellsFormatter(Function<Cell, Integer> cellToInt) {
+			this.cellToInt = cellToInt;
+		}
+
+	}
+
+	/**
 	 * Indicates that a Puzzle Status was changed.
 	 */
 	public static final String PUZZLE_STATUS = "Puzzle.Status";
-
-	private final Function<? super Integer, ? extends String> rowToString = row -> this.getCellsStream()
-			.filter(ROW.getPositionPredicate(row)) //
-			.map(CELL_TO_VALUE_OR_0) //
-			.map(String::valueOf) //
-			.collect(Collectors.joining());
 
 	private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
@@ -175,9 +196,18 @@ public class Puzzle {
 	 * <code>NNNNNNNNN.NNNNNNNNN.NNNNNNNNN.NNNNNNNNN.NNNNNNNNN.NNNNNNNNN.NNNNNNNNN.NNNNNNNNN.NNNNNNNNN</code>
 	 * , where N is a value from 1 to 9 or 0 if the Cell is empty.
 	 * 
+	 * @param cellsFormatter
+	 *            How Cell value will be shown.
+	 * 
 	 * @return String with the Cell's values.
 	 */
-	public String formatCells() {
+	public String formatCells(CellsFormatter cellsFormatter) {
+		final Function<? super Integer, ? extends String> rowToString = row -> this.getCellsStream()
+				.filter(ROW.getPositionPredicate(row)) //
+				.map(cellsFormatter.cellToInt) //
+				.map(String::valueOf) //
+				.collect(Collectors.joining());
+
 		return rangeStream().map(rowToString).collect(Collectors.joining("."));
 	}
 
@@ -216,7 +246,7 @@ public class Puzzle {
 	 */
 	@Override
 	public String toString() {
-		return "[" + this.formatCells() + ", " + this.status + "]";
+		return "[" + this.formatCells(CellsFormatter.ALL) + ", " + this.status + "]";
 	}
 
 }

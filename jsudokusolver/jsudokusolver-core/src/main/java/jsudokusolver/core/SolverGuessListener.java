@@ -4,8 +4,8 @@ import java.util.EventListener;
 
 /**
  * Listens a {@link SolverGuessEvent}
- *
  */
+@FunctionalInterface
 public interface SolverGuessListener extends EventListener {
 
 	/**
