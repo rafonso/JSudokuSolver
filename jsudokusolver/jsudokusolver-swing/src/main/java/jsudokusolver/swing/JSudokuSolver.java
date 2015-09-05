@@ -2,8 +2,6 @@ package jsudokusolver.swing;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -12,6 +10,7 @@ import javax.swing.border.EmptyBorder;
 
 import jsudokusolver.console.ConsoleListener;
 import jsudokusolver.core.Cell;
+import jsudokusolver.core.CorrectedCellListener;
 import jsudokusolver.core.Puzzle;
 
 public class JSudokuSolver extends JFrame {
@@ -54,13 +53,6 @@ public class JSudokuSolver extends JFrame {
 	public JSudokuSolver() {
 		setIconImage(Utils.getImage("jsudokusolver" + Utils.ICON_EXTENSION, 32));
 		setResizable(false);
-		addComponentListener(new ComponentAdapter() {
-			@Override
-			public void componentResized(ComponentEvent e) {
-				System.out.println("===========================");
-				System.out.println("FRAME: " + ((JFrame) e.getSource()).getSize());
-			}
-		});
 		setTitle("Swing Sudoku Solver");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 332, 384);
@@ -72,16 +64,33 @@ public class JSudokuSolver extends JFrame {
 		contentPane.add(this.getPanelPuzzle(), BorderLayout.CENTER);
 		contentPane.add(this.getPanelControls(), BorderLayout.SOUTH);
 
+		injectListeners();
+	}
+
+	private void injectListeners() {
 		ConsoleListener logger = new ConsoleListener();
+		CorrectedCellListener reoriginatorCellListener = new CorrectedCellListener(puzzle);
+		PuzzleFormatParserListener formatParser = new PuzzleFormatParserListener(puzzle);
+		
 		this.puzzle.addPropertyChangeListener(logger);
 		for (int i = 0; i < 81; i++) {
-			int[] rowCol = Cell.valueToPositions(i);
-			final Cell cell = this.puzzle.getCell(rowCol[0], rowCol[1]);
-			cell.addPropertyChangeListener(logger);
-			new CellTextFieldListener(this.puzzle, cell,
-					(SudokuTextField) this.getPanelPuzzle().getComponent(i));
+			prepareCell(i, logger, reoriginatorCellListener, formatParser);
+		}
+		for(int i = 0; i < getPanelControls().getComponentCount(); i ++) {
+			getPanelControls().getComponent(i).addKeyListener(formatParser);
 		}
 		new PuzzlePanelControlsListener(this.puzzle, getPanelControls());
+	}
+
+	private void prepareCell(int i, ConsoleListener logger, CorrectedCellListener reoriginatorCellListener,
+			PuzzleFormatParserListener formatParser) {
+		int[] rowCol = Cell.valueToPositions(i);
+		final Cell cell = this.puzzle.getCell(rowCol[0], rowCol[1]);
+		cell.addPropertyChangeListener(logger);
+		cell.addPropertyChangeListener(reoriginatorCellListener);
+		final SudokuTextField textField = (SudokuTextField) this.getPanelPuzzle().getComponent(i);
+		textField.addKeyListener(formatParser);
+		new CellTextFieldListener(this.puzzle, cell, textField);
 	}
 
 	private PanelPuzzle getPanelPuzzle() {
