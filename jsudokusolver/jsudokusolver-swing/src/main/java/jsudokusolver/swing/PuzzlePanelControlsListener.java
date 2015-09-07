@@ -2,8 +2,6 @@ package jsudokusolver.swing;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
@@ -13,17 +11,16 @@ import jsudokusolver.core.InvalidPuzzleException;
 import jsudokusolver.core.Puzzle;
 import jsudokusolver.core.PuzzleStatus;
 import jsudokusolver.core.RepeatedCellsException;
-import jsudokusolver.core.Solver;
 import jsudokusolver.core.Validator;
 import jsudokusolver.swing.PanelControls.ButtonToShow;
 
-public class PuzzlePanelControlsListener implements PropertyChangeListener, ActionListener, ItemListener {
+public class PuzzlePanelControlsListener implements PropertyChangeListener, ActionListener {
 
 	private final Puzzle puzzle;
 
 	private final PanelControls panelControls;
 
-	private long t0;
+	private SolverWorker solverWorker;
 
 	PuzzlePanelControlsListener(Puzzle puzzle, PanelControls panelControls) {
 		super();
@@ -35,16 +32,15 @@ public class PuzzlePanelControlsListener implements PropertyChangeListener, Acti
 		this.panelControls.getBtnReset().addActionListener(this);
 		this.panelControls.getBtnRun().addActionListener(this);
 		this.panelControls.getBtnStop().addActionListener(this);
-		this.panelControls.getCmbStepTime().addItemListener(this);
 	}
 
 	private void startSolver() {
 		try {
 			new Validator().validate(puzzle);
-			Solver solver = new Solver();
-			solver.addPropertyChangeListener(this);
-			this.t0 = System.currentTimeMillis();
-			solver.start(puzzle);
+
+			this.solverWorker = new SolverWorker(puzzle, this.panelControls.getCmbStepTime(),
+					this.panelControls.getLblCycles(), this.panelControls.getLblTime());
+			this.solverWorker.execute();
 		} catch (RepeatedCellsException e) {
 			String msg = String.format("Repeated value %d in %s %d, cells [%d,%d] and [%d,%d]", e.getRepeatedValue(),
 					e.getPuzzlePositions().getDescription(), e.getPosition(), e.getCell1().getRow(),
@@ -76,12 +72,12 @@ public class PuzzlePanelControlsListener implements PropertyChangeListener, Acti
 		case RUNNING:
 			this.enableControls(false, false, true, false, ButtonToShow.STOP);
 			this.panelControls.showState(true);
-			this.panelControls.getLblCycles().setText("0");
 			break;
 		case SOLVED:
 			this.enableControls(false, true, false, true, ButtonToShow.RESET);
 			break;
 		case STOPPED:
+			this.solverWorker.cancel(true);
 			this.enableControls(true, true, false, true, ButtonToShow.RESET);
 			break;
 		}
@@ -104,16 +100,6 @@ public class PuzzlePanelControlsListener implements PropertyChangeListener, Acti
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (evt.getPropertyName().equals(Puzzle.PUZZLE_STATUS)) {
 			puzzleStatusChanged((PuzzleStatus) evt.getNewValue());
-		} else if (evt.getPropertyName().equals(Solver.SOLVER_CYCLE)) {
-			this.panelControls.getLblCycles().setText(evt.getNewValue().toString());
-		}
-		this.panelControls.getLblTime().setText(String.valueOf(System.currentTimeMillis() - t0));
-	}
-
-	@Override
-	public void itemStateChanged(ItemEvent e) {
-		if (e.getStateChange() == ItemEvent.SELECTED) {
-			System.out.println("PuzzlePanelControlsListener.itemStateChanged(): " + e.getItem());
 		}
 	}
 

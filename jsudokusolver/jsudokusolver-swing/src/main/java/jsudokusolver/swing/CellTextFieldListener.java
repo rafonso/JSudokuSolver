@@ -33,7 +33,6 @@ class CellTextFieldListener implements PropertyChangeListener, DocumentListener 
 		this.puzzleStatus = puzzle.getStatus();
 
 		this.cell.addPropertyChangeListener(this);
-		// this.textField.addPropertyChangeListener(this);
 		this.textField.getDocument().addDocumentListener(this);
 		puzzle.addPropertyChangeListener(this);
 	}
@@ -54,25 +53,24 @@ class CellTextFieldListener implements PropertyChangeListener, DocumentListener 
 	public void propertyChange(PropertyChangeEvent evt) {
 		switch (evt.getPropertyName()) {
 		case Cell.CELL_STATUS:
-//		System.out.println(
-//				evt.getSource() + " " + evt.getPropertyName() + ": " + evt.getOldValue() + " -> " + evt.getNewValue());
 			switch ((CellStatus) evt.getNewValue()) {
 			case ORIGINAL:
 				this.textField.setFont(SudokuTextField.FONT_ORIGINAL);
 				if (!this.textField.getBackground().equals(SudokuTextField.COLOR_DEFAULT)) {
-					System.out.println(evt.getSource()+ ": isBackgroundSet? " + this.textField.isBackgroundSet());
+					System.out.println(evt.getSource() + ": isBackgroundSet? " + this.textField.isBackgroundSet());
 					this.textField.setBackground(SudokuTextField.COLOR_DEFAULT);
-					
+
 				}
 				break;
 			case ERROR:
 				this.textField.setBackground(SudokuTextField.COLOR_ERROR);
 				this.textField.requestFocusInWindow();
 				break;
+			case EVALUATING:
+				this.textField.setBackground(SudokuTextField.COLOR_EVALUATING);
+				break;
 			case IDLE:
-				if (evt.getOldValue().equals(CellStatus.ERROR)) {
-					this.textField.setBackground(SudokuTextField.COLOR_DEFAULT);
-				}
+				this.textField.setBackground(SudokuTextField.COLOR_DEFAULT);
 				break;
 			default:
 				this.textField.setFont(Utils.FONT_DEFAULT);
@@ -104,8 +102,6 @@ class CellTextFieldListener implements PropertyChangeListener, DocumentListener 
 			try {
 				final Document document = e.getDocument();
 				final String text = document.getText(0, document.getLength());
-				// System.out.println("CellTextFieldListener.insertUpdate() " +
-				// text);
 				this.cell.setValueStatus(Integer.valueOf(text), CellStatus.ORIGINAL);
 			} catch (BadLocationException e1) {
 				throw new RuntimeException("Problem in " + this.textField.getName() + ": " + e1.getMessage(), e1);
