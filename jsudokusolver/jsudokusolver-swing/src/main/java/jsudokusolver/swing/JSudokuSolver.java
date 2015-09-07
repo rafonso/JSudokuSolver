@@ -55,7 +55,7 @@ public class JSudokuSolver extends JFrame {
 		setResizable(false);
 		setTitle("Swing Sudoku Solver");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 332, 384);
+		setBounds(100, 100, 350, 500);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(5, 5));

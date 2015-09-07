@@ -54,8 +54,8 @@ class CellTextFieldListener implements PropertyChangeListener, DocumentListener 
 	public void propertyChange(PropertyChangeEvent evt) {
 		switch (evt.getPropertyName()) {
 		case Cell.CELL_STATUS:
-		System.out.println(
-				evt.getSource() + " " + evt.getPropertyName() + ": " + evt.getOldValue() + " -> " + evt.getNewValue());
+//		System.out.println(
+//				evt.getSource() + " " + evt.getPropertyName() + ": " + evt.getOldValue() + " -> " + evt.getNewValue());
 			switch ((CellStatus) evt.getNewValue()) {
 			case ORIGINAL:
 				this.textField.setFont(SudokuTextField.FONT_ORIGINAL);

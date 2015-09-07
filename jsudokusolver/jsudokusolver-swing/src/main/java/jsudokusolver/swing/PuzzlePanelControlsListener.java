@@ -4,20 +4,16 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.Random;
 
 import javax.swing.JOptionPane;
 
-import jsudokusolver.core.Cell;
-import jsudokusolver.core.CellStatus;
 import jsudokusolver.core.InvalidPuzzleException;
 import jsudokusolver.core.Puzzle;
 import jsudokusolver.core.PuzzleStatus;
 import jsudokusolver.core.RepeatedCellsException;
+import jsudokusolver.core.Solver;
 import jsudokusolver.core.Validator;
 import jsudokusolver.swing.PanelControls.ButtonToShow;
 
@@ -38,32 +34,14 @@ public class PuzzlePanelControlsListener implements PropertyChangeListener, Acti
 		this.panelControls.getBtnRun().addActionListener(this);
 		this.panelControls.getBtnStop().addActionListener(this);
 		this.panelControls.getCmbStepTime().addItemListener(this);
-
-		this.panelControls.addMouseListener(new MouseAdapter() {
-			// Just to simulate cell filling while running
-			Random random = new Random();
-
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				if (e.getClickCount() == 2) {
-					boolean fill = false;
-					while (!fill) {
-						Cell c = PuzzlePanelControlsListener.this.puzzle.getCell(random.nextInt(9) + 1,
-								random.nextInt(9) + 1);
-						if (!c.hasValue()) {
-							c.setValueStatus(random.nextInt(9) + 1, CellStatus.FILLED);
-							fill = true;
-						}
-					}
-				}
-			}
-		});
 	}
 
 	private void startSolver() {
 		try {
 			new Validator().validate(puzzle);
-			puzzle.setStatus(PuzzleStatus.RUNNING);
+			Solver solver = new Solver();
+			solver.addPropertyChangeListener(this);
+			solver.start(puzzle);
 		} catch (RepeatedCellsException e) {
 			String msg = String.format("Repeated value %d in %s %d, cells [%d,%d] and [%d,%d]", e.getRepeatedValue(),
 					e.getPuzzlePositions().getDescription(), e.getPosition(), e.getCell1().getRow(),
@@ -75,10 +53,39 @@ public class PuzzlePanelControlsListener implements PropertyChangeListener, Acti
 		}
 	}
 
+	private void enableControls(boolean run, boolean clean, boolean stop, boolean reset, ButtonToShow buttonToShow) {
+		this.panelControls.getBtnRun().setEnabled(run);
+		this.panelControls.getBtnClean().setEnabled(clean);
+		this.panelControls.getBtnStop().setEnabled(stop);
+		this.panelControls.getBtnReset().setEnabled(reset);
+		this.panelControls.showButton(buttonToShow);
+	}
+
+	private void puzzleStatusChanged(PuzzleStatus newStatus) {
+		switch (newStatus) {
+		case INVALID:
+		case READY:
+		case VALIDATING:
+		case WAITING:
+			this.enableControls(true, true, false, false, ButtonToShow.STOP);
+			this.panelControls.showState(false);
+			break;
+		case RUNNING:
+			this.enableControls(false, false, true, false, ButtonToShow.STOP);
+			this.panelControls.showState(true);
+			this.panelControls.getLblCycles().setText("0");
+			break;
+		case SOLVED:
+			this.enableControls(false, true, false, true, ButtonToShow.RESET);
+			break;
+		case STOPPED:
+			this.enableControls(true, true, false, true, ButtonToShow.RESET);
+			break;
+		}
+	}
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
-//		final JComponent jComponent = (JComponent) e.getSource();
-//		System.out.println("PuzzlePanelControlsListener.actionPerformed(): " + jComponent.getName());
 		if (e.getSource() == this.panelControls.getBtnClean()) {
 			this.puzzle.cleanCells();
 		} else if (e.getSource() == this.panelControls.getBtnReset()) {
@@ -92,43 +99,10 @@ public class PuzzlePanelControlsListener implements PropertyChangeListener, Acti
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-		if (!evt.getPropertyName().equals(Puzzle.PUZZLE_STATUS)) {
-			return;
-		}
-
-		PuzzleStatus newStatus = (PuzzleStatus) evt.getNewValue();
-		switch (newStatus) {
-		case INVALID:
-		case READY:
-		case VALIDATING:
-		case WAITING:
-			this.panelControls.getBtnRun().setEnabled(true);
-			this.panelControls.getBtnClean().setEnabled(true);
-			this.panelControls.getBtnStop().setEnabled(false);
-			this.panelControls.getBtnReset().setEnabled(false);
-			this.panelControls.showButton(ButtonToShow.STOP);
-			break;
-		case RUNNING:
-			this.panelControls.getBtnRun().setEnabled(false);
-			this.panelControls.getBtnClean().setEnabled(false);
-			this.panelControls.getBtnStop().setEnabled(true);
-			this.panelControls.getBtnReset().setEnabled(false);
-			this.panelControls.showButton(ButtonToShow.STOP);
-			break;
-		case SOLVED:
-			this.panelControls.getBtnRun().setEnabled(false);
-			this.panelControls.getBtnClean().setEnabled(true);
-			this.panelControls.getBtnStop().setEnabled(false);
-			this.panelControls.getBtnReset().setEnabled(true);
-			this.panelControls.showButton(ButtonToShow.RESET);
-			break;
-		case STOPPED:
-			this.panelControls.getBtnRun().setEnabled(true);
-			this.panelControls.getBtnClean().setEnabled(true);
-			this.panelControls.getBtnStop().setEnabled(false);
-			this.panelControls.getBtnReset().setEnabled(true);
-			this.panelControls.showButton(ButtonToShow.RESET);
-			break;
+		if (evt.getPropertyName().equals(Puzzle.PUZZLE_STATUS)) {
+			puzzleStatusChanged((PuzzleStatus) evt.getNewValue());
+		} else if (evt.getPropertyName().equals(Solver.SOLVER_CYCLE)) {
+			this.panelControls.getLblCycles().setText(evt.getNewValue().toString());
 		}
 	}
 

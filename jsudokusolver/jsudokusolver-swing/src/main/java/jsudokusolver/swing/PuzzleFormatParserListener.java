@@ -44,10 +44,10 @@ public class PuzzleFormatParserListener extends KeyAdapter implements ClipboardO
 			cells = ((String) JOptionPane.showInputDialog(component, INPUT_MESSAGE, INPUT_TILE,
 					JOptionPane.PLAIN_MESSAGE, null, null, cells));
 			if ((cells == null) || cells.trim().isEmpty()) {
-				puzzle.cleanCells();
 				importingComplete = true;
 			} else {
 				try {
+					this.puzzle.cleanCells();
 					this.puzzle.parse(cells.trim());
 					importingComplete = true;
 				} catch (IllegalArgumentException e) {
@@ -56,7 +56,6 @@ public class PuzzleFormatParserListener extends KeyAdapter implements ClipboardO
 							JOptionPane.ERROR_MESSAGE);
 				}
 			}
-
 		} while (!importingComplete);
 	}
 
