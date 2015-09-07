@@ -23,6 +23,8 @@ public class PuzzlePanelControlsListener implements PropertyChangeListener, Acti
 
 	private final PanelControls panelControls;
 
+	private long t0;
+
 	PuzzlePanelControlsListener(Puzzle puzzle, PanelControls panelControls) {
 		super();
 		this.puzzle = puzzle;
@@ -41,6 +43,7 @@ public class PuzzlePanelControlsListener implements PropertyChangeListener, Acti
 			new Validator().validate(puzzle);
 			Solver solver = new Solver();
 			solver.addPropertyChangeListener(this);
+			this.t0 = System.currentTimeMillis();
 			solver.start(puzzle);
 		} catch (RepeatedCellsException e) {
 			String msg = String.format("Repeated value %d in %s %d, cells [%d,%d] and [%d,%d]", e.getRepeatedValue(),
@@ -104,6 +107,7 @@ public class PuzzlePanelControlsListener implements PropertyChangeListener, Acti
 		} else if (evt.getPropertyName().equals(Solver.SOLVER_CYCLE)) {
 			this.panelControls.getLblCycles().setText(evt.getNewValue().toString());
 		}
+		this.panelControls.getLblTime().setText(String.valueOf(System.currentTimeMillis() - t0));
 	}
 
 	@Override
