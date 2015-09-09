@@ -37,6 +37,7 @@ public class JSudokuSolver extends JFrame {
 					UIManager.put("Label.font", Utils.FONT_DEFAULT);
 					UIManager.put("ComboBox.font", Utils.FONT_DEFAULT);
 					UIManager.put("TextField.font", Utils.FONT_DEFAULT);
+					UIManager.put("TextField.disabledBackground", UIManager.get("TextField.background"));
 
 					JSudokuSolver frame = new JSudokuSolver();
 					frame.setVisible(true);
@@ -71,12 +72,12 @@ public class JSudokuSolver extends JFrame {
 		ConsoleListener logger = new ConsoleListener();
 		CorrectedCellListener reoriginatorCellListener = new CorrectedCellListener(puzzle);
 		PuzzleFormatParserListener formatParser = new PuzzleFormatParserListener(puzzle);
-		
+
 		this.puzzle.addPropertyChangeListener(logger);
 		for (int i = 0; i < 81; i++) {
 			prepareCell(i, logger, reoriginatorCellListener, formatParser);
 		}
-		for(int i = 0; i < getPanelControls().getComponentCount(); i ++) {
+		for (int i = 0; i < getPanelControls().getComponentCount(); i++) {
 			getPanelControls().getComponent(i).addKeyListener(formatParser);
 		}
 		new PuzzlePanelControlsListener(this.puzzle, getPanelControls());

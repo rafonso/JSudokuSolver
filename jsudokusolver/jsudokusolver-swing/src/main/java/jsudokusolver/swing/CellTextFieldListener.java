@@ -57,9 +57,7 @@ class CellTextFieldListener implements PropertyChangeListener, DocumentListener 
 			case ORIGINAL:
 				this.textField.setFont(SudokuTextField.FONT_ORIGINAL);
 				if (!this.textField.getBackground().equals(SudokuTextField.COLOR_DEFAULT)) {
-					System.out.println(evt.getSource() + ": isBackgroundSet? " + this.textField.isBackgroundSet());
 					this.textField.setBackground(SudokuTextField.COLOR_DEFAULT);
-
 				}
 				break;
 			case ERROR:

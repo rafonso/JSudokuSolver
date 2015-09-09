@@ -78,7 +78,7 @@ public class PuzzlePanelControlsListener implements PropertyChangeListener, Acti
 			break;
 		case STOPPED:
 			this.solverWorker.cancel(true);
-			this.enableControls(true, true, false, true, ButtonToShow.RESET);
+			this.enableControls(false, true, false, true, ButtonToShow.RESET);
 			break;
 		}
 	}

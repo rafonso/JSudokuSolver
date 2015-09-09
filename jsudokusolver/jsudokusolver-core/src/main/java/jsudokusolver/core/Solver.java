@@ -15,11 +15,13 @@ import static jsudokusolver.core.PuzzleStatus.INVALID;
 import static jsudokusolver.core.PuzzleStatus.READY;
 import static jsudokusolver.core.PuzzleStatus.RUNNING;
 import static jsudokusolver.core.PuzzleStatus.SOLVED;
+import static jsudokusolver.core.PuzzleStatus.STOPPED;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
@@ -44,6 +46,8 @@ public class Solver {
 	private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
 	private final List<SolverGuessListener> solverGuessListeners = new ArrayList<>();
+
+	private boolean stopRequested = false;
 
 	/**
 	 * Incements the current Solver's Cycle. It fires a
@@ -146,7 +150,16 @@ public class Solver {
 
 	private List<Cell> solveCycle(Puzzle puzzle, final Deque<SolverGuess> guesses, List<Cell> emptyCells) {
 		this.incrementCycle();
-		emptyCells.forEach(c -> this.solveCell(c, puzzle, guesses.isEmpty()));
+		for (Cell c : emptyCells) {
+			this.solveCell(c, puzzle, guesses.isEmpty());
+			if (stopRequested) {
+				break;
+			}
+		}
+
+		if (stopRequested) {
+			return Collections.emptyList();
+		}
 
 		List<Cell> nextEmptyCells = this.getEmptyCells(puzzle);
 		if (nextEmptyCells.size() == emptyCells.size()) {
@@ -170,10 +183,10 @@ public class Solver {
 
 		puzzle.setStatus(RUNNING);
 		// Main loop
-		while (!emptyCells.isEmpty()) {
+		while (!stopRequested && !emptyCells.isEmpty()) {
 			emptyCells = this.solveCycle(puzzle, guesses, emptyCells);
 		}
-		puzzle.setStatus(SOLVED);
+		puzzle.setStatus(this.stopRequested ? STOPPED : SOLVED);
 	}
 
 	/**
@@ -221,6 +234,10 @@ public class Solver {
 	 */
 	public void removeSolverGuessListener(SolverGuessListener listener) {
 		this.solverGuessListeners.remove(listener);
+	}
+
+	public void requestStop() {
+		this.stopRequested = true;
 	}
 
 }

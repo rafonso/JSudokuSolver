@@ -13,7 +13,7 @@ class Utils {
 
 	static final String ICON_EXTENSION = ".png";
 
-	static final Font FONT_DEFAULT = new Font("Tahoma", Font.PLAIN, 16);
+	static final Font FONT_DEFAULT = new Font("Arial", Font.PLAIN, 16);
 
 	static Image getImage(String imageName, int size) {
 		try {

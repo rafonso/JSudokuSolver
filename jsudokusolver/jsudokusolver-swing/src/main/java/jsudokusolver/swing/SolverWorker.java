@@ -4,6 +4,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Optional;
 
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -24,7 +25,7 @@ class SolverWorker extends SwingWorker<Void, Void>implements ItemListener, Prope
 	private final JLabel lblTime;
 
 	private final JComboBox<Integer> cmbStepTime;
-	
+
 	private Solver solver;
 
 	private Integer stepTime;
@@ -58,19 +59,17 @@ class SolverWorker extends SwingWorker<Void, Void>implements ItemListener, Prope
 		this.lblTime.setText(String.valueOf(System.currentTimeMillis() - t0));
 	}
 
-	private void stepTime(CellStatus previousStatus, CellStatus newStatus) {
-		boolean pause = (previousStatus == CellStatus.EVALUATING) || (newStatus == CellStatus.EVALUATING);
+	private void stepTime(boolean pause) {
 		if (pause && (stepTime > 0)) {
 			try {
-				if (stepTime == 1) {
-					Thread.sleep(0, 500);
-				} else if (stepTime == 5) {
-					Thread.sleep(2, 500);
-				} else {
-					Thread.sleep(this.stepTime / 2);
-				}
+				int delta = stepTime * 1000 / 2;
+				int millis = delta / 1000;
+				int nanos = delta % 1000;
+				Thread.sleep(millis, nanos);
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+				// http://stackoverflow.com/a/9139139/1659543
+				// restore interrupted status
+				Thread.currentThread().interrupt(); 
 			}
 		}
 	}
@@ -112,18 +111,26 @@ class SolverWorker extends SwingWorker<Void, Void>implements ItemListener, Prope
 			this.showCycle((int) evt.getNewValue());
 			break;
 		case Puzzle.PUZZLE_STATUS:
-			if(evt.getNewValue() == PuzzleStatus.SOLVED) {
+			if (evt.getNewValue() == PuzzleStatus.SOLVED) {
+				this.removeListeners();
+			} else if (evt.getNewValue() == PuzzleStatus.STOPPED) {
+				this.solver.requestStop();
 				this.removeListeners();
 			}
 			break;
 		case Cell.CELL_STATUS:
-			this.stepTime((CellStatus) evt.getOldValue(), (CellStatus) evt.getNewValue());
+			boolean pause = evt.getOldValue().equals(CellStatus.EVALUATING)
+					|| evt.getNewValue().equals(CellStatus.EVALUATING);
+			this.stepTime(pause);
 			break;
 		case Cell.CELL_VALUE:
-			// Nothing?
+			CellStatus cellStatus = ((Cell) evt.getSource()).getStatus();
+			@SuppressWarnings("unchecked")
+			Optional<Integer> cellValue = (Optional<Integer>) evt.getNewValue();
+			this.stepTime(cellStatus.equals(CellStatus.GUESSING) && cellValue.isPresent());
 			break;
 		case "state": // SwingWorker.StateValue
-			if(evt.getNewValue() == SwingWorker.StateValue.DONE) {
+			if (evt.getNewValue() == SwingWorker.StateValue.DONE) {
 				this.removeListeners();
 			}
 			break;
