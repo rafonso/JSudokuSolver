@@ -2,7 +2,9 @@ package jsudokusolver.swing;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.EnumSet;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -14,6 +16,10 @@ import jsudokusolver.core.CellStatus;
 import jsudokusolver.core.Puzzle;
 import jsudokusolver.core.PuzzleStatus;
 
+/**
+ * Listener which links a {@link Cell} and a {@link SudokuTextField} handling
+ * the changes in one to the other.
+ */
 class CellTextFieldListener implements PropertyChangeListener, DocumentListener {
 
 	private final Cell cell;
@@ -21,6 +27,9 @@ class CellTextFieldListener implements PropertyChangeListener, DocumentListener 
 	private final SudokuTextField textField;
 
 	private PuzzleStatus puzzleStatus;
+
+	private final Set<PuzzleStatus> editableStatus = EnumSet.complementOf(
+			EnumSet.of(PuzzleStatus.RUNNING, PuzzleStatus.SOLVED, PuzzleStatus.STOPPED, PuzzleStatus.VALIDATING));
 
 	public CellTextFieldListener(Puzzle puzzle, Cell cell, SudokuTextField textField) {
 		if ((cell.getRow() != textField.getRow()) || (cell.getColumn() != textField.getCol())) {
@@ -37,9 +46,31 @@ class CellTextFieldListener implements PropertyChangeListener, DocumentListener 
 		puzzle.addPropertyChangeListener(this);
 	}
 
-	private void changeTextField(PropertyChangeEvent evt) {
-		@SuppressWarnings("unchecked")
-		Optional<Integer> value = (Optional<Integer>) evt.getNewValue();
+	private void cellStatusChanged(final CellStatus newCellStatus) {
+		switch (newCellStatus) {
+		case ORIGINAL:
+			this.textField.setFont(SudokuTextField.FONT_ORIGINAL);
+			if (!this.textField.getBackground().equals(SudokuTextField.COLOR_DEFAULT)) {
+				this.textField.setBackground(SudokuTextField.COLOR_DEFAULT);
+			}
+			break;
+		case ERROR:
+			this.textField.setBackground(SudokuTextField.COLOR_ERROR);
+			this.textField.requestFocusInWindow();
+			break;
+		case EVALUATING:
+			this.textField.setBackground(SudokuTextField.COLOR_EVALUATING);
+			break;
+		case IDLE:
+			this.textField.setBackground(SudokuTextField.COLOR_DEFAULT);
+			break;
+		default:
+			this.textField.setFont(Utils.FONT_DEFAULT);
+			break;
+		}
+	}
+
+	private void cellValueChanged(Optional<?> value) {
 		String str = value.isPresent() ? value.get().toString() : "";
 		// Verification seen in http://stackoverflow.com/a/11743648/1659543 to
 		// avoid "java.lang.IllegalStateException: Attempt to mutate in
@@ -49,48 +80,21 @@ class CellTextFieldListener implements PropertyChangeListener, DocumentListener 
 		}
 	}
 
+	private void puzzleSatusChanged(PuzzleStatus puzzleStatus) {
+		this.textField.setEditable(this.editableStatus.contains(puzzleStatus));
+	}
+
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		switch (evt.getPropertyName()) {
 		case Cell.CELL_STATUS:
-			switch ((CellStatus) evt.getNewValue()) {
-			case ORIGINAL:
-				this.textField.setFont(SudokuTextField.FONT_ORIGINAL);
-				if (!this.textField.getBackground().equals(SudokuTextField.COLOR_DEFAULT)) {
-					this.textField.setBackground(SudokuTextField.COLOR_DEFAULT);
-				}
-				break;
-			case ERROR:
-				this.textField.setBackground(SudokuTextField.COLOR_ERROR);
-				this.textField.requestFocusInWindow();
-				break;
-			case EVALUATING:
-				this.textField.setBackground(SudokuTextField.COLOR_EVALUATING);
-				break;
-			case IDLE:
-				this.textField.setBackground(SudokuTextField.COLOR_DEFAULT);
-				break;
-			default:
-				this.textField.setFont(Utils.FONT_DEFAULT);
-				break;
-			}
+			this.cellStatusChanged((CellStatus) evt.getNewValue());
 			break;
 		case Cell.CELL_VALUE:
-			this.changeTextField(evt);
+			this.cellValueChanged((Optional<?>) evt.getNewValue());
 			break;
 		case Puzzle.PUZZLE_STATUS:
-			PuzzleStatus puzzleStatus = (PuzzleStatus) evt.getNewValue();
-			switch (puzzleStatus) {
-			case RUNNING:
-			case SOLVED:
-			case STOPPED:
-			case VALIDATING:
-				this.textField.setEditable(false);
-				break;
-			default:
-				this.textField.setEditable(true);
-				break;
-			}
+			this.puzzleSatusChanged((PuzzleStatus) evt.getNewValue());
 		}
 	}
 

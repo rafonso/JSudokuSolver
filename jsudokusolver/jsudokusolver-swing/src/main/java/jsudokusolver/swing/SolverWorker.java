@@ -40,13 +40,29 @@ class SolverWorker extends SwingWorker<Void, Void>implements ItemListener, Prope
 		this.lblTime = lblTime;
 		this.solver = new Solver();
 
+		this.addListeners();
+	}
+
+	private void addListeners() {
 		super.addPropertyChangeListener(this);
 		this.solver.addPropertyChangeListener(this);
-		cmbStepTime.addItemListener(this);
+		this.cmbStepTime.addItemListener(this);
 		this.puzzle.addPropertyChangeListener(this);
 		for (int row = 1; row <= 9; row++) {
 			for (int col = 1; col <= 9; col++) {
 				this.puzzle.getCell(row, col).addPropertyChangeListener(this);
+			}
+		}
+	}
+
+	private void removeListeners() {
+		super.removePropertyChangeListener(this);
+		this.solver.removePropertyChangeListener(this);
+		this.cmbStepTime.removeItemListener(this);
+		this.puzzle.removePropertyChangeListener(this);
+		for (int row = 1; row <= 9; row++) {
+			for (int col = 1; col <= 9; col++) {
+				this.puzzle.getCell(row, col).removePropertyChangeListener(this);
 			}
 		}
 	}
@@ -70,18 +86,6 @@ class SolverWorker extends SwingWorker<Void, Void>implements ItemListener, Prope
 				// http://stackoverflow.com/a/9139139/1659543
 				// restore interrupted status
 				Thread.currentThread().interrupt(); 
-			}
-		}
-	}
-
-	private void removeListeners() {
-		super.removePropertyChangeListener(this);
-		this.solver.removePropertyChangeListener(this);
-		cmbStepTime.removeItemListener(this);
-		this.puzzle.removePropertyChangeListener(this);
-		for (int row = 1; row <= 9; row++) {
-			for (int col = 1; col <= 9; col++) {
-				this.puzzle.getCell(row, col).removePropertyChangeListener(this);
 			}
 		}
 	}

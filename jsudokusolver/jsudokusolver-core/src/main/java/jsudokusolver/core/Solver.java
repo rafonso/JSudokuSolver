@@ -47,7 +47,17 @@ public class Solver {
 
 	private final List<SolverGuessListener> solverGuessListeners = new ArrayList<>();
 
+	/**
+	 * Flag to interrupt this Solver
+	 */
 	private boolean stopRequested = false;
+
+	private void invalidatePuzzle(boolean isInvalid, Puzzle puzzle, final String msg) {
+		if (isInvalid) {
+			puzzle.setStatus(INVALID);
+			throw new InvalidPuzzleException(msg);
+		}
+	}
 
 	/**
 	 * Incements the current Solver's Cycle. It fires a
@@ -80,10 +90,9 @@ public class Solver {
 
 		List<Integer> possibleValues = this.getPossibleValues(c, puzzle);
 
-		if (possibleValues.isEmpty() && mementoIsEmpty) {
-			puzzle.setStatus(INVALID);
-			throw new InvalidPuzzleException("Cell " + c + " without no remaing value");
-		} else if (possibleValues.size() == 1) {
+		this.invalidatePuzzle(possibleValues.isEmpty() && mementoIsEmpty, puzzle,
+				"Cell " + c + " without no remaing value");
+		if (possibleValues.size() == 1) {
 			c.setValue(possibleValues.get(0));
 			c.setStatus(FILLED);
 		} else {
@@ -105,10 +114,7 @@ public class Solver {
 			memento.pop();
 		}
 		SolverGuess solverGuess = memento.peek();
-		if (solverGuess == null) {
-			puzzle.setStatus(INVALID);
-			throw new InvalidPuzzleException("There is no solution!");
-		}
+		this.invalidatePuzzle(solverGuess == null, puzzle, "There is no solution!");
 		solverGuess.discardCurrentGuessValue();
 		final int[] guessPosition = solverGuess.getGuessPosition();
 		this.fireSolverGuessEvent(SolverGuessEventType.REMOVAL, puzzle.getCell(guessPosition[0], guessPosition[1]));
@@ -130,19 +136,16 @@ public class Solver {
 		Cell guessCell = emptyCells.subList(1, emptyCells.size()).stream().reduce(emptyCells.get(0), accumulator);
 		List<Integer> possibleValues = this.getPossibleValues(guessCell, puzzle);
 
+		this.invalidatePuzzle(possibleValues.isEmpty() && memento.isEmpty(), puzzle, "There is no solution!");
 		if (!possibleValues.isEmpty()) {
 			final Function<? super Cell, ? extends int[]> cellToPosition = c -> new int[] { c.getRow(), c.getColumn() };
 			List<int[]> emptyPositions = emptyCells.stream().map(cellToPosition).collect(toList());
 			memento.addFirst(new SolverGuess(cellToPosition.apply(guessCell), possibleValues, emptyPositions));
 		} else if (!memento.isEmpty()) {
-			for (SolverGuess solverGuess = removeInvalidGuess(puzzle, memento, false); //
-			solverGuess.isEmpty(); //
-			solverGuess = removeInvalidGuess(puzzle, memento, true)) {
-				;
+			SolverGuess solverGuess = this.removeInvalidGuess(puzzle, memento, false);
+			while (solverGuess.isEmpty()) {
+				solverGuess = this.removeInvalidGuess(puzzle, memento, true);
 			}
-		} else {
-			puzzle.setStatus(INVALID);
-			throw new InvalidPuzzleException("There is no solution!");
 		}
 
 		fillGuess(memento.peek(), puzzle);
@@ -236,6 +239,10 @@ public class Solver {
 		this.solverGuessListeners.remove(listener);
 	}
 
+	/**
+	 * Request the interruption of this solver. The Puzzle will have its status
+	 * changed to {@link PuzzleStatus#STOPPED}.
+	 */
 	public void requestStop() {
 		this.stopRequested = true;
 	}

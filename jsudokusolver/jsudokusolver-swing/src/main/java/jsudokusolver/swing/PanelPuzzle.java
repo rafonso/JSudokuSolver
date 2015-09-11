@@ -52,7 +52,6 @@ public class PanelPuzzle extends JPanel implements KeyListener {
 	@Override
 	public void keyPressed(KeyEvent e) {
 		SudokuTextField textField = (SudokuTextField) e.getSource();
-//		System.out.println(textField.getName() + "(" + textField.getPosition() + ") - Pressed : " + e);
 		switch (e.getKeyCode()) {
 		case KeyEvent.VK_0:
 		case KeyEvent.VK_NUMPAD0:
@@ -88,7 +87,6 @@ public class PanelPuzzle extends JPanel implements KeyListener {
 	@Override
 	public void keyReleased(KeyEvent e) {
 		SudokuTextField textField = (SudokuTextField) e.getSource();
-//		System.out.println(textField.getName() + " - Released: " + e);
 		switch (e.getKeyCode()) {
 		case KeyEvent.VK_0:
 		case KeyEvent.VK_1:
@@ -120,8 +118,7 @@ public class PanelPuzzle extends JPanel implements KeyListener {
 
 	@Override
 	public void keyTyped(KeyEvent e) {
-		SudokuTextField textField = (SudokuTextField) e.getSource();
-		// System.out.println(textField.getName() + " - Typed : " + e);
+		// Do nothing ...
 	}
 
 	public void cleanAll() {
