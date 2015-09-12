@@ -11,6 +11,8 @@ import javax.swing.text.DocumentFilter;
  *
  */
 class SudokuDocFilter extends DocumentFilter {
+	
+	static final SudokuDocFilter INSTANCE = new SudokuDocFilter();
 
 	private StringBuilder getOldText(final FilterBypass fb) throws BadLocationException {
 		Document doc = fb.getDocument();

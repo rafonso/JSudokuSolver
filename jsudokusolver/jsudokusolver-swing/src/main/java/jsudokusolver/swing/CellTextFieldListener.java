@@ -44,6 +44,7 @@ class CellTextFieldListener implements PropertyChangeListener, DocumentListener 
 		this.cell.addPropertyChangeListener(this);
 		this.textField.getDocument().addDocumentListener(this);
 		puzzle.addPropertyChangeListener(this);
+		this.textField.addPropertyChangeListener(this);
 	}
 
 	private void cellStatusChanged(final CellStatus newCellStatus) {
@@ -81,7 +82,9 @@ class CellTextFieldListener implements PropertyChangeListener, DocumentListener 
 	}
 
 	private void puzzleSatusChanged(PuzzleStatus puzzleStatus) {
-		this.textField.setEditable(this.editableStatus.contains(puzzleStatus));
+		final boolean isEditable = this.editableStatus.contains(puzzleStatus);
+		this.textField.setEditable(isEditable);
+		this.textField.setDocumentFilter(isEditable? SudokuDocFilter.INSTANCE: null);
 	}
 
 	@Override

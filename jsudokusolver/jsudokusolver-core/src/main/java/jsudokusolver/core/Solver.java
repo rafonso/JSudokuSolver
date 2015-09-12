@@ -52,10 +52,10 @@ public class Solver {
 	 */
 	private boolean stopRequested = false;
 
-	private void invalidatePuzzle(boolean isInvalid, Puzzle puzzle, final String msg) {
+	private void invalidatePuzzle(boolean isInvalid, Puzzle puzzle, final String msg, Object... msgParams) {
 		if (isInvalid) {
 			puzzle.setStatus(INVALID);
-			throw new InvalidPuzzleException(msg);
+			throw new InvalidPuzzleException(String.format(msg, msgParams));
 		}
 	}
 
@@ -90,11 +90,9 @@ public class Solver {
 
 		List<Integer> possibleValues = this.getPossibleValues(c, puzzle);
 
-		this.invalidatePuzzle(possibleValues.isEmpty() && mementoIsEmpty, puzzle,
-				"Cell " + c + " without no remaing value");
+		this.invalidatePuzzle(possibleValues.isEmpty() && mementoIsEmpty, puzzle, "Cell %s with no remaing value", c);
 		if (possibleValues.size() == 1) {
-			c.setValue(possibleValues.get(0));
-			c.setStatus(FILLED);
+			c.setValueStatus(possibleValues.get(0), FILLED);
 		} else {
 			c.setStatus(IDLE);
 		}

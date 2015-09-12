@@ -7,15 +7,16 @@ import java.awt.event.FocusListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JTextField;
+import javax.swing.text.DocumentFilter;
 import javax.swing.text.PlainDocument;
 
 public class SudokuTextField extends JTextField implements FocusListener {
 
 	private static final long serialVersionUID = 1970097593494061829L;
-	
+
 	static final Font FONT_ORIGINAL = Utils.FONT_DEFAULT.deriveFont(Font.BOLD);
 	static final Font FONT_GUESS = Utils.FONT_DEFAULT.deriveFont(Font.ITALIC);
-	
+
 	static final Color COLOR_DEFAULT = Color.WHITE;
 	static final Color COLOR_ERROR = Color.RED;
 	static final Color COLOR_EVALUATING = Color.YELLOW;
@@ -31,13 +32,12 @@ public class SudokuTextField extends JTextField implements FocusListener {
 		this.row = row;
 		this.col = col;
 
-		PlainDocument document = (PlainDocument) super.getDocument();
-		document.setDocumentFilter(new SudokuDocFilter());
+		this.setDocumentFilter(SudokuDocFilter.INSTANCE);
 		this.addFocusListener(this);
 
 		// Border
-		int top = (row == 1) ? 3 : 1; 
-		int left = (col == 1) ? 3 : 1; 
+		int top = (row == 1) ? 3 : 1;
+		int left = (col == 1) ? 3 : 1;
 		int bottom = (row == 9) ? 3 : ((row == 3) || (row == 6)) ? 2 : 1;
 		int right = (col == 9) ? 3 : ((col == 3) || (col == 6)) ? 2 : 1;
 		super.setBorder(BorderFactory.createMatteBorder(top, left, bottom, right, Color.BLACK));
@@ -67,6 +67,11 @@ public class SudokuTextField extends JTextField implements FocusListener {
 	@Override
 	public void focusLost(FocusEvent e) {
 		// Do nothing
+	}
+	
+	void setDocumentFilter(DocumentFilter filter) {
+		PlainDocument document = (PlainDocument) super.getDocument();
+		document.setDocumentFilter(filter);
 	}
 
 }
