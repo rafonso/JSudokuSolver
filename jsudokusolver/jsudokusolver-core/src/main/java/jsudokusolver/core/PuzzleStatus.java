@@ -29,6 +29,10 @@ public enum PuzzleStatus {
 	 */
 	STOPPED, //
 	/**
+	 * There was some error while solving this puzzle.
+	 */
+	ERROR, //
+	/**
 	 * The Puzzle was completly solved.
 	 */
 	SOLVED //

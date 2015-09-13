@@ -11,7 +11,7 @@ import static jsudokusolver.core.CellStatus.IDLE;
 import static jsudokusolver.core.PuzzlePositions.COLUMN;
 import static jsudokusolver.core.PuzzlePositions.ROW;
 import static jsudokusolver.core.PuzzlePositions.SECTOR;
-import static jsudokusolver.core.PuzzleStatus.INVALID;
+import static jsudokusolver.core.PuzzleStatus.ERROR;
 import static jsudokusolver.core.PuzzleStatus.READY;
 import static jsudokusolver.core.PuzzleStatus.RUNNING;
 import static jsudokusolver.core.PuzzleStatus.SOLVED;
@@ -30,6 +30,8 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import jsudokusolver.core.SolverGuessEvent.SolverGuessEventType;
+import jsudokusolver.core.exception.CellWithNoRemaningValueExcetion;
+import jsudokusolver.core.exception.NoSolutionPuzzleException;
 
 /**
  * Solves a {@link Puzzle}
@@ -52,10 +54,15 @@ public class Solver {
 	 */
 	private boolean stopRequested = false;
 
-	private void invalidatePuzzle(boolean isInvalid, Puzzle puzzle, final String msg, Object... msgParams) {
+	/**
+	 * Throws a {@link NoSolutionPuzzleException}
+	 * @param isInvalid
+	 * @param puzzle
+	 */
+	private void verifyIfCanBeSolved(boolean isInvalid, Puzzle puzzle) {
 		if (isInvalid) {
-			puzzle.setStatus(INVALID);
-			throw new InvalidPuzzleException(String.format(msg, msgParams));
+			puzzle.setStatus(ERROR);
+			throw new NoSolutionPuzzleException();
 		}
 	}
 
@@ -90,7 +97,11 @@ public class Solver {
 
 		List<Integer> possibleValues = this.getPossibleValues(c, puzzle);
 
-		this.invalidatePuzzle(possibleValues.isEmpty() && mementoIsEmpty, puzzle, "Cell %s with no remaing value", c);
+		if (possibleValues.isEmpty() && mementoIsEmpty) {
+			c.setStatus(CellStatus.ERROR);
+			puzzle.setStatus(ERROR);
+			throw new CellWithNoRemaningValueExcetion(c);
+		}
 		if (possibleValues.size() == 1) {
 			c.setValueStatus(possibleValues.get(0), FILLED);
 		} else {
@@ -110,9 +121,10 @@ public class Solver {
 	private SolverGuess removeInvalidGuess(Puzzle puzzle, Deque<SolverGuess> memento, boolean popMemento) {
 		if (popMemento) {
 			memento.pop();
+			this.verifyIfCanBeSolved(memento.isEmpty(), puzzle);
 		}
+
 		SolverGuess solverGuess = memento.peek();
-		this.invalidatePuzzle(solverGuess == null, puzzle, "There is no solution!");
 		solverGuess.discardCurrentGuessValue();
 		final int[] guessPosition = solverGuess.getGuessPosition();
 		this.fireSolverGuessEvent(SolverGuessEventType.REMOVAL, puzzle.getCell(guessPosition[0], guessPosition[1]));
@@ -134,7 +146,7 @@ public class Solver {
 		Cell guessCell = emptyCells.subList(1, emptyCells.size()).stream().reduce(emptyCells.get(0), accumulator);
 		List<Integer> possibleValues = this.getPossibleValues(guessCell, puzzle);
 
-		this.invalidatePuzzle(possibleValues.isEmpty() && memento.isEmpty(), puzzle, "There is no solution!");
+		this.verifyIfCanBeSolved(possibleValues.isEmpty() && memento.isEmpty(), puzzle);
 		if (!possibleValues.isEmpty()) {
 			final Function<? super Cell, ? extends int[]> cellToPosition = c -> new int[] { c.getRow(), c.getColumn() };
 			List<int[]> emptyPositions = emptyCells.stream().map(cellToPosition).collect(toList());

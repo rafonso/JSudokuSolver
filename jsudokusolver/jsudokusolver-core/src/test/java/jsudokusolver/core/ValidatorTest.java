@@ -9,6 +9,10 @@ import java.beans.PropertyChangeListener;
 
 import org.junit.Test;
 
+import jsudokusolver.core.exception.EmptyPuzzleException;
+import jsudokusolver.core.exception.SudokuException;
+import jsudokusolver.core.exception.RepeatedCellsException;
+
 public class ValidatorTest {
 
 	private Validator validator = new Validator();
@@ -78,7 +82,7 @@ public class ValidatorTest {
 	}
 
 	@Test(expected = EmptyPuzzleException.class)
-	public void emptyPuzzle() throws InvalidPuzzleException {
+	public void emptyPuzzle() throws SudokuException {
 		final Puzzle p = new Puzzle();
 		p.addPropertyChangeListener(this.addValidationListening(p, PuzzleStatus.INVALID));
 		this.validator.validate(p);

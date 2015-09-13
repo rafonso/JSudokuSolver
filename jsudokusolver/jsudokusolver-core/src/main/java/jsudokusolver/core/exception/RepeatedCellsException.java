@@ -1,10 +1,13 @@
-package jsudokusolver.core;
+package jsudokusolver.core.exception;
+
+import jsudokusolver.core.Cell;
+import jsudokusolver.core.PuzzlePositions;
 
 /**
  * It indicates that it was found a repeated value in a position
  * (Row/Column/Sector) during the Validation.
  */
-public class RepeatedCellsException extends InvalidPuzzleException {
+public class RepeatedCellsException extends SudokuException {
 
 	private static final long serialVersionUID = -6239853384721694158L;
 

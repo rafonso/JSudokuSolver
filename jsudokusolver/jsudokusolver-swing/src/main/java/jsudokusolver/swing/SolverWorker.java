@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 
 import jsudokusolver.core.Cell;
@@ -15,6 +16,7 @@ import jsudokusolver.core.CellStatus;
 import jsudokusolver.core.Puzzle;
 import jsudokusolver.core.PuzzleStatus;
 import jsudokusolver.core.Solver;
+import jsudokusolver.core.exception.SudokuException;
 
 class SolverWorker extends SwingWorker<Void, Void>implements ItemListener, PropertyChangeListener {
 
@@ -85,19 +87,25 @@ class SolverWorker extends SwingWorker<Void, Void>implements ItemListener, Prope
 			} catch (InterruptedException e) {
 				// http://stackoverflow.com/a/9139139/1659543
 				// restore interrupted status
-				Thread.currentThread().interrupt(); 
+				Thread.currentThread().interrupt();
 			}
 		}
 	}
 
 	@Override
 	protected Void doInBackground() throws Exception {
-		this.t0 = System.currentTimeMillis();
-		this.showCycle(0);
-		this.showTime();
-		this.solver.start(puzzle);
+		try {
+			this.t0 = System.currentTimeMillis();
+			this.showCycle(0);
+			this.showTime();
+			this.solver.start(puzzle);
 
-		return null;
+			return null;
+		} catch (SudokuException e) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(this.lblCycles, e.getMessage(), "Fail on solving", JOptionPane.ERROR_MESSAGE);
+			throw e;
+		}
 	}
 
 	@Override
@@ -108,6 +116,7 @@ class SolverWorker extends SwingWorker<Void, Void>implements ItemListener, Prope
 		}
 	}
 
+	@SuppressWarnings("incomplete-switch")
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		switch (evt.getPropertyName()) {
@@ -115,11 +124,14 @@ class SolverWorker extends SwingWorker<Void, Void>implements ItemListener, Prope
 			this.showCycle((int) evt.getNewValue());
 			break;
 		case Puzzle.PUZZLE_STATUS:
-			if (evt.getNewValue() == PuzzleStatus.SOLVED) {
-				this.removeListeners();
-			} else if (evt.getNewValue() == PuzzleStatus.STOPPED) {
+			switch ((PuzzleStatus) evt.getNewValue()) {
+			case STOPPED:
 				this.solver.requestStop();
+			case SOLVED:
+			case INVALID:
+			case ERROR:
 				this.removeListeners();
+				break;
 			}
 			break;
 		case Cell.CELL_STATUS:

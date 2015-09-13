@@ -7,11 +7,11 @@ import java.beans.PropertyChangeListener;
 
 import javax.swing.JOptionPane;
 
-import jsudokusolver.core.InvalidPuzzleException;
 import jsudokusolver.core.Puzzle;
 import jsudokusolver.core.PuzzleStatus;
-import jsudokusolver.core.RepeatedCellsException;
 import jsudokusolver.core.Validator;
+import jsudokusolver.core.exception.SudokuException;
+import jsudokusolver.core.exception.RepeatedCellsException;
 import jsudokusolver.swing.PanelControls.ButtonToShow;
 
 public class PuzzlePanelControlsListener implements PropertyChangeListener, ActionListener {
@@ -43,43 +43,34 @@ public class PuzzlePanelControlsListener implements PropertyChangeListener, Acti
 			this.solverWorker.execute();
 		} catch (RepeatedCellsException e) {
 			String msg = String.format("Repeated value %d in %s %d, cells [%d,%d] and [%d,%d]", e.getRepeatedValue(),
-					e.getPuzzlePositions().getDescription(), e.getPosition(), e.getCell1().getRow(),
-					e.getCell1().getColumn(), e.getCell2().getRow(), e.getCell2().getColumn());
+					e.getPuzzlePositions().getDescription(), e.getPosition(), //
+					e.getCell1().getRow(), e.getCell1().getColumn(), //
+					e.getCell2().getRow(), e.getCell2().getColumn());
 			JOptionPane.showMessageDialog(this.panelControls, msg, "Puzzle Error!", JOptionPane.ERROR_MESSAGE);
-		} catch (InvalidPuzzleException e) {
+		} catch (SudokuException e) {
 			JOptionPane.showMessageDialog(this.panelControls, e.getMessage(), "Puzzle Error!",
 					JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
-	private void enableControls(boolean run, boolean clean, boolean stop, boolean reset, ButtonToShow buttonToShow) {
-		this.panelControls.getBtnRun().setEnabled(run);
-		this.panelControls.getBtnClean().setEnabled(clean);
-		this.panelControls.getBtnStop().setEnabled(stop);
-		this.panelControls.getBtnReset().setEnabled(reset);
-		this.panelControls.showButton(buttonToShow);
-	}
-
 	private void puzzleStatusChanged(PuzzleStatus newStatus) {
 		switch (newStatus) {
-		case INVALID:
-		case READY:
-		case VALIDATING:
-		case WAITING:
-			this.enableControls(true, true, false, false, ButtonToShow.STOP);
-			this.panelControls.showState(false);
-			break;
 		case RUNNING:
-			this.enableControls(false, false, true, false, ButtonToShow.STOP);
-			this.panelControls.showState(true);
+			this.panelControls.enableControls(false, false, true, false, true, ButtonToShow.STOP);
 			break;
 		case SOLVED:
-			this.enableControls(false, true, false, true, ButtonToShow.RESET);
+			this.panelControls.enableControls(false, true, false, true, true, ButtonToShow.RESET);
 			break;
 		case STOPPED:
 			this.solverWorker.cancel(true);
-			this.enableControls(false, true, false, true, ButtonToShow.RESET);
+			this.panelControls.enableControls(false, true, false, true, true, ButtonToShow.RESET);
 			break;
+		case INVALID:
+		case ERROR:
+			this.panelControls.enableControls(false, true, false, false, true, ButtonToShow.RESET);
+			break;
+		default:
+			this.panelControls.enableControls(true, true, false, false, false, ButtonToShow.STOP);
 		}
 	}
 

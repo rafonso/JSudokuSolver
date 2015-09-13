@@ -2,6 +2,10 @@ package jsudokusolver.core;
 
 import static jsudokusolver.core.CellFunctions.rangeStream;
 
+import jsudokusolver.core.exception.EmptyPuzzleException;
+import jsudokusolver.core.exception.SudokuException;
+import jsudokusolver.core.exception.RepeatedCellsException;
+
 /**
  * Validates a {@link Puzzle}. 4 types of validation are done:
  * <ol>
@@ -51,10 +55,10 @@ public class Validator {
 	 * 
 	 * @param p
 	 *            Puzzle to be validated.
-	 * @throws InvalidPuzzleException
+	 * @throws SudokuException
 	 *             If it was found some error.
 	 */
-	public void validate(Puzzle p) throws InvalidPuzzleException {
+	public void validate(Puzzle p) throws SudokuException {
 		p.setStatus(PuzzleStatus.VALIDATING);
 		this.validateFilling(p);
 		this.validateRepetition(p, PuzzlePositions.ROW);

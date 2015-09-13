@@ -28,9 +28,8 @@ class CellTextFieldListener implements PropertyChangeListener, DocumentListener 
 
 	private PuzzleStatus puzzleStatus;
 
-	private final Set<PuzzleStatus> editableStatus = EnumSet.complementOf(
-			EnumSet.of(PuzzleStatus.RUNNING, PuzzleStatus.SOLVED, PuzzleStatus.STOPPED, PuzzleStatus.VALIDATING));
-
+	private final Set<PuzzleStatus> editableStatus = EnumSet.of(PuzzleStatus.WAITING, PuzzleStatus.INVALID);
+	
 	public CellTextFieldListener(Puzzle puzzle, Cell cell, SudokuTextField textField) {
 		if ((cell.getRow() != textField.getRow()) || (cell.getColumn() != textField.getCol())) {
 			throw new IllegalArgumentException(
@@ -84,7 +83,7 @@ class CellTextFieldListener implements PropertyChangeListener, DocumentListener 
 	private void puzzleSatusChanged(PuzzleStatus puzzleStatus) {
 		final boolean isEditable = this.editableStatus.contains(puzzleStatus);
 		this.textField.setEditable(isEditable);
-		this.textField.setDocumentFilter(isEditable? SudokuDocFilter.INSTANCE: null);
+		this.textField.setDocumentFilter(isEditable ? SudokuDocFilter.INSTANCE : null);
 	}
 
 	@Override

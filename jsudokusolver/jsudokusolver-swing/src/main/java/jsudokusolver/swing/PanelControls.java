@@ -62,6 +62,23 @@ public class PanelControls extends JPanel {
 		return new ImageIcon(Utils.getImage(iconName, 24));
 	}
 
+	private void showButton(ButtonToShow buttonToShow) {
+		CardLayout cl = (CardLayout) getPnlStopReset().getLayout();
+		if (buttonToShow == ButtonToShow.STOP) {
+			cl.show(getPnlStopReset(), "btnStop");
+		} else {
+			cl.show(getPnlStopReset(), "btnReset");
+		}
+	}
+
+	private void showState(boolean show) {
+		this.getLblTitleTime().setVisible(show);
+		this.getLblTime().setVisible(show);
+		this.getLblTimeMs().setVisible(show);
+		this.getLblTitleCycles().setVisible(show);
+		this.getLblCycles().setVisible(show);
+	}
+
 	JButton getBtnRun() {
 		if (btnRun == null) {
 			btnRun = new JButton("Run");
@@ -185,20 +202,14 @@ public class PanelControls extends JPanel {
 		return lblCycles;
 	}
 
-	void showButton(ButtonToShow buttonToShow) {
-		CardLayout cl = (CardLayout) getPnlStopReset().getLayout();
-		if (buttonToShow == ButtonToShow.STOP) {
-			cl.show(getPnlStopReset(), "btnStop");
-		} else {
-			cl.show(getPnlStopReset(), "btnReset");
-		}
+	void enableControls(boolean run, boolean clean, boolean stop, boolean reset, boolean showState,
+			ButtonToShow buttonToShow) {
+		this.getBtnRun().setEnabled(run);
+		this.getBtnClean().setEnabled(clean);
+		this.getBtnStop().setEnabled(stop);
+		this.getBtnReset().setEnabled(reset);
+		this.showState(showState);
+		this.showButton(buttonToShow);
 	}
 
-	void showState(boolean show) {
-		this.getLblTitleTime().setVisible(show);
-		this.getLblTime().setVisible(show);
-		this.getLblTimeMs().setVisible(show);
-		this.getLblTitleCycles().setVisible(show);
-		this.getLblCycles().setVisible(show);
-	}
 }
