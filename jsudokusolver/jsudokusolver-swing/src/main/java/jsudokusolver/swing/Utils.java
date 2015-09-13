@@ -7,7 +7,11 @@ import java.net.URL;
 
 import javax.imageio.ImageIO;
 
+import jsudokusolver.console.ConsoleListener;
+
 class Utils {
+	
+	static final ConsoleListener LOG = new ConsoleListener();
 
 	private static final String ICON_PATH = "/icons/";
 

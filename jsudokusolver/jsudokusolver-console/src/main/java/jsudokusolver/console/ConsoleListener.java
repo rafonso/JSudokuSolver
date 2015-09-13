@@ -89,10 +89,10 @@ public class ConsoleListener implements PropertyChangeListener, SolverGuessListe
 	public void guessAction(SolverGuessEvent event) {
 		if (event.getType() == SolverGuessEventType.ADDITION) {
 			this.guessingCells.addLast(event.getGuessCell());
+			log.debug("GUESS: {} ", this.guessingCells);
 		} else {
 			this.guessingCells.removeLast();
 		}
-		log.debug("{} Guess Cell {}. Guesses: {}", event.getType(), event.getGuessCell(), this.guessingCells);
 	}
 
 }

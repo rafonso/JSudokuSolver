@@ -20,6 +20,7 @@ public class SudokuTextField extends JTextField implements FocusListener {
 	static final Color COLOR_DEFAULT = Color.WHITE;
 	static final Color COLOR_ERROR = Color.RED;
 	static final Color COLOR_EVALUATING = Color.YELLOW;
+	static final Color COLOR_GUESSING = Color.CYAN;
 
 	private final int row;
 	private final int col;

@@ -48,6 +48,8 @@ class SolverWorker extends SwingWorker<Void, Void>implements ItemListener, Prope
 	private void addListeners() {
 		super.addPropertyChangeListener(this);
 		this.solver.addPropertyChangeListener(this);
+		this.solver.addPropertyChangeListener(Utils.LOG);
+		this.solver.addSolverGuessListener(Utils.LOG);
 		this.cmbStepTime.addItemListener(this);
 		this.puzzle.addPropertyChangeListener(this);
 		for (int row = 1; row <= 9; row++) {
@@ -59,7 +61,8 @@ class SolverWorker extends SwingWorker<Void, Void>implements ItemListener, Prope
 
 	private void removeListeners() {
 		super.removePropertyChangeListener(this);
-		this.solver.removePropertyChangeListener(this);
+		this.solver.removePropertyChangeListener(Utils.LOG);
+		this.solver.removeSolverGuessListener(Utils.LOG);
 		this.cmbStepTime.removeItemListener(this);
 		this.puzzle.removePropertyChangeListener(this);
 		for (int row = 1; row <= 9; row++) {
@@ -92,6 +95,20 @@ class SolverWorker extends SwingWorker<Void, Void>implements ItemListener, Prope
 		}
 	}
 
+	private void puzzleStatusChanged(final PuzzleStatus newStatus) {
+		switch (newStatus) {
+		case STOPPED:
+			this.solver.requestStop();
+		case SOLVED:
+		case INVALID:
+		case ERROR:
+			this.removeListeners();
+			break;
+		default:
+			break;
+		}
+	}
+
 	@Override
 	protected Void doInBackground() throws Exception {
 		try {
@@ -116,7 +133,6 @@ class SolverWorker extends SwingWorker<Void, Void>implements ItemListener, Prope
 		}
 	}
 
-	@SuppressWarnings("incomplete-switch")
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		switch (evt.getPropertyName()) {
@@ -124,15 +140,7 @@ class SolverWorker extends SwingWorker<Void, Void>implements ItemListener, Prope
 			this.showCycle((int) evt.getNewValue());
 			break;
 		case Puzzle.PUZZLE_STATUS:
-			switch ((PuzzleStatus) evt.getNewValue()) {
-			case STOPPED:
-				this.solver.requestStop();
-			case SOLVED:
-			case INVALID:
-			case ERROR:
-				this.removeListeners();
-				break;
-			}
+			this.puzzleStatusChanged((PuzzleStatus) evt.getNewValue());
 			break;
 		case Cell.CELL_STATUS:
 			boolean pause = evt.getOldValue().equals(CellStatus.EVALUATING)

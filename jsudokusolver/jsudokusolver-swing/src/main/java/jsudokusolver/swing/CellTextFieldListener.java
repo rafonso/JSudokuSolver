@@ -64,6 +64,10 @@ class CellTextFieldListener implements PropertyChangeListener, DocumentListener 
 		case IDLE:
 			this.textField.setBackground(SudokuTextField.COLOR_DEFAULT);
 			break;
+		case GUESSING:
+			this.textField.setFont(Utils.FONT_DEFAULT);
+			this.textField.setBackground(SudokuTextField.COLOR_GUESSING);
+			break;
 		default:
 			this.textField.setFont(Utils.FONT_DEFAULT);
 			break;

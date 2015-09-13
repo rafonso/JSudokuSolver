@@ -69,13 +69,12 @@ public class JSudokuSolver extends JFrame {
 	}
 
 	private void injectListeners() {
-		ConsoleListener logger = new ConsoleListener();
 		CorrectedCellListener reoriginatorCellListener = new CorrectedCellListener(puzzle);
 		PuzzleFormatParserListener formatParser = new PuzzleFormatParserListener(puzzle);
 
-		this.puzzle.addPropertyChangeListener(logger);
+		this.puzzle.addPropertyChangeListener(Utils.LOG);
 		for (int i = 0; i < 81; i++) {
-			prepareCell(i, logger, reoriginatorCellListener, formatParser);
+			prepareCell(i, Utils.LOG, reoriginatorCellListener, formatParser);
 		}
 		for (int i = 0; i < getPanelControls().getComponentCount(); i++) {
 			getPanelControls().getComponent(i).addKeyListener(formatParser);
