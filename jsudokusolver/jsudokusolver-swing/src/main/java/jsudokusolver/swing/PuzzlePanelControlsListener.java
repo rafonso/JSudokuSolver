@@ -12,7 +12,6 @@ import jsudokusolver.core.PuzzleStatus;
 import jsudokusolver.core.Validator;
 import jsudokusolver.core.exception.EmptyPuzzleException;
 import jsudokusolver.core.exception.RepeatedCellsException;
-import jsudokusolver.swing.PanelControls.ButtonToShow;
 
 public class PuzzlePanelControlsListener implements PropertyChangeListener, ActionListener {
 
@@ -57,33 +56,32 @@ public class PuzzlePanelControlsListener implements PropertyChangeListener, Acti
 	private void puzzleStatusChanged(PuzzleStatus newStatus) {
 		switch (newStatus) {
 		case RUNNING:
-			this.panelControls.enableControls(false, false, true, false, true, ButtonToShow.STOP);
+			this.panelControls.enableControls(false, false, true, false, true, true);
 			break;
 		case SOLVED:
-			this.panelControls.enableControls(false, true, false, true, true, ButtonToShow.RESET);
+			this.panelControls.enableControls(false, true, false, true, true, false);
 			break;
 		case STOPPED:
 			this.solverWorker.cancel(true);
-			this.panelControls.enableControls(false, true, false, true, true, ButtonToShow.RESET);
+			this.panelControls.enableControls(false, true, false, true, true, false);
 			break;
-		case INVALID:
 		case ERROR:
-			this.panelControls.enableControls(false, true, false, false, true, ButtonToShow.RESET);
+			this.panelControls.enableControls(false, true, false, false, true, false);
 			break;
 		default:
-			this.panelControls.enableControls(true, true, false, false, false, ButtonToShow.STOP);
+			this.panelControls.enableControls(true, true, false, false, false, true);
 		}
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (e.getSource() == this.panelControls.getBtnClean()) {
+		if (e.getActionCommand().equals(Messages.getString("btnClean.title"))) {
 			this.puzzle.cleanCells();
-		} else if (e.getSource() == this.panelControls.getBtnReset()) {
+		} else if (e.getActionCommand().equals(Messages.getString("btnReset.title"))) {
 			this.puzzle.reset();
-		} else if (e.getSource() == this.panelControls.getBtnRun()) {
+		} else if (e.getActionCommand().equals(Messages.getString("btnRun.title"))) {
 			this.startSolver();
-		} else if (e.getSource() == this.panelControls.getBtnStop()) {
+		} else if (e.getActionCommand().equals(Messages.getString("btnStop.title"))) {
 			this.puzzle.setStatus(PuzzleStatus.STOPPED);
 		}
 	}

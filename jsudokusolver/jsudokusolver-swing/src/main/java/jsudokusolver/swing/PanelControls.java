@@ -15,10 +15,6 @@ import javax.swing.SwingConstants;
 
 public class PanelControls extends JPanel {
 
-	enum ButtonToShow {
-		STOP, RESET
-	}
-
 	private static final long serialVersionUID = 1255801329328690203L;
 
 	private static final String ICON_RUN = "appbar.control.play" + Utils.ICON_EXTENSION;
@@ -62,9 +58,9 @@ public class PanelControls extends JPanel {
 		return new ImageIcon(Utils.getImage(iconName, 24));
 	}
 
-	private void showButton(ButtonToShow buttonToShow) {
+	private void showButtonStop(boolean showBtnStop) {
 		CardLayout cl = (CardLayout) getPnlStopReset().getLayout();
-		if (buttonToShow == ButtonToShow.STOP) {
+		if (showBtnStop) {
 			cl.show(getPnlStopReset(), "btnStop");
 		} else {
 			cl.show(getPnlStopReset(), "btnReset");
@@ -203,13 +199,13 @@ public class PanelControls extends JPanel {
 	}
 
 	void enableControls(boolean run, boolean clean, boolean stop, boolean reset, boolean showState,
-			ButtonToShow buttonToShow) {
+			boolean showBtnStop) {
 		this.getBtnRun().setEnabled(run);
 		this.getBtnClean().setEnabled(clean);
 		this.getBtnStop().setEnabled(stop);
 		this.getBtnReset().setEnabled(reset);
 		this.showState(showState);
-		this.showButton(buttonToShow);
+		this.showButtonStop(showBtnStop);
 	}
 
 }
