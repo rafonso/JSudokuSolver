@@ -17,23 +17,19 @@ import jsudokusolver.core.PuzzleStatus;
 
 public class PuzzleFormatParserListener extends KeyAdapter implements ClipboardOwner {
 
-	private static final String INPUT_MESSAGE = "Enter the puzzle. 1 to 9 for filled Cells. "
-			+ "0 for empty Cells. Dots(.) are optionals";
-	private static final String INPUT_TILE = "Input Puzzle";
-
 	private final Puzzle puzzle;
 
 	public PuzzleFormatParserListener(Puzzle puzzle) {
 		this.puzzle = puzzle;
 	}
 
-	private void exportCells(Component component, String title, final CellsFormatter cellsFormatter) {
+	private void exportCells(Component component, String key, final CellsFormatter cellsFormatter) {
 		final String cells = puzzle.formatCells(cellsFormatter);
 
 		Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 		clipboard.setContents(new StringSelection(cells), this);
 
-		String dialogTitle = title + " Exported to the Clipboard.";
+		String dialogTitle = Messages.getString(key) + ' ' + Messages.getString("export.common.title");
 		JOptionPane.showMessageDialog(component, cells, dialogTitle, JOptionPane.INFORMATION_MESSAGE);
 	}
 
@@ -41,8 +37,8 @@ public class PuzzleFormatParserListener extends KeyAdapter implements ClipboardO
 		boolean importingComplete = false;
 		String cells = null;
 		do {
-			cells = ((String) JOptionPane.showInputDialog(component, INPUT_MESSAGE, INPUT_TILE,
-					JOptionPane.PLAIN_MESSAGE, null, null, cells));
+			cells = ((String) JOptionPane.showInputDialog(component, Messages.getString("import.message"),
+					Messages.getString("import.title"), JOptionPane.PLAIN_MESSAGE, null, null, cells));
 			if ((cells == null) || cells.trim().isEmpty()) {
 				importingComplete = true;
 			} else {
@@ -52,7 +48,7 @@ public class PuzzleFormatParserListener extends KeyAdapter implements ClipboardO
 					importingComplete = true;
 				} catch (IllegalArgumentException e) {
 					e.printStackTrace();
-					JOptionPane.showMessageDialog(component, e.getMessage(), "Parser Error!",
+					JOptionPane.showMessageDialog(component, e.getMessage(), Messages.getString("import.error.title"),
 							JOptionPane.ERROR_MESSAGE);
 				}
 			}
@@ -66,9 +62,9 @@ public class PuzzleFormatParserListener extends KeyAdapter implements ClipboardO
 		}
 
 		if (e.getKeyCode() == KeyEvent.VK_E && e.isShiftDown()) {
-			exportCells(e.getComponent(), "All Puzzle Cells.", CellsFormatter.ALL);
+			exportCells(e.getComponent(), "export.all.title", CellsFormatter.ALL);
 		} else if (e.getKeyCode() == KeyEvent.VK_E && !e.isShiftDown()) {
-			exportCells(e.getComponent(), "The Original Puzzle Cells.", CellsFormatter.ORIGINALS);
+			exportCells(e.getComponent(), "export.original.title", CellsFormatter.ORIGINALS);
 		} else if (e.getKeyCode() == KeyEvent.VK_I && puzzle.getStatus() != PuzzleStatus.RUNNING) {
 			this.importCells(e.getComponent());
 		}
@@ -77,7 +73,6 @@ public class PuzzleFormatParserListener extends KeyAdapter implements ClipboardO
 	@Override
 	public void lostOwnership(Clipboard clipboard, Transferable contents) {
 		// TODO Auto-generated method stub
-
 	}
 
 }

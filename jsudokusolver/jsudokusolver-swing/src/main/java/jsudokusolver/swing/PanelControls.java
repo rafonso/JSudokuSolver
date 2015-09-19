@@ -81,7 +81,7 @@ public class PanelControls extends JPanel {
 
 	JButton getBtnRun() {
 		if (btnRun == null) {
-			btnRun = new JButton("Run");
+			btnRun = new JButton(Messages.getString("btnRun.title")); //$NON-NLS-1$
 			btnRun.setName("btnRun");
 			btnRun.setIcon(this.getIcon(ICON_RUN));
 			btnRun.setMnemonic('R');
@@ -91,7 +91,7 @@ public class PanelControls extends JPanel {
 
 	JButton getBtnStop() {
 		if (btnStop == null) {
-			btnStop = new JButton("Stop");
+			btnStop = new JButton(Messages.getString("btnStop.title")); //$NON-NLS-1$
 			btnStop.setEnabled(false);
 			btnStop.setName("btnStop");
 			btnStop.setIcon(this.getIcon(ICON_STOP));
@@ -103,7 +103,7 @@ public class PanelControls extends JPanel {
 
 	JButton getBtnClean() {
 		if (btnClean == null) {
-			btnClean = new JButton("Clean");
+			btnClean = new JButton(Messages.getString("btnClean.title")); //$NON-NLS-1$
 			btnClean.setName("btnClean");
 			btnClean.setIcon(this.getIcon(ICON_CLEAN));
 			btnClean.setMnemonic('C');
@@ -113,7 +113,7 @@ public class PanelControls extends JPanel {
 
 	JButton getBtnReset() {
 		if (btnReset == null) {
-			btnReset = new JButton("Reset");
+			btnReset = new JButton(Messages.getString("btnReset.title")); //$NON-NLS-1$
 			btnReset.setEnabled(false);
 			btnReset.setName("btnReset");
 			btnReset.setIcon(this.getIcon(ICON_RESET));
@@ -124,7 +124,7 @@ public class PanelControls extends JPanel {
 
 	private JLabel getLblStepTime() {
 		if (lblStepTime == null) {
-			lblStepTime = new JLabel("Step Time");
+			lblStepTime = new JLabel(Messages.getString("lblStepTime.title")); //$NON-NLS-1$
 			lblStepTime.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblStepTime.setLabelFor(getCmbStepTime());
 		}
@@ -133,7 +133,7 @@ public class PanelControls extends JPanel {
 
 	JComboBox<Integer> getCmbStepTime() {
 		if (cmbStepTime == null) {
-			cmbStepTime = new JComboBox<Integer>();
+			cmbStepTime = new JComboBox<>();
 			cmbStepTime.setName("cmbStepTime");
 			cmbStepTime.setModel(new DefaultComboBoxModel<Integer>(new Integer[] { 0, 1, 5, 10, 50, 100, 500, 1000 }));
 			((JLabel) cmbStepTime.getRenderer()).setHorizontalAlignment(SwingConstants.RIGHT);
@@ -160,7 +160,7 @@ public class PanelControls extends JPanel {
 
 	private JLabel getLblTitleTime() {
 		if (lblTitleTime == null) {
-			lblTitleTime = new JLabel("Time:");
+			lblTitleTime = new JLabel(Messages.getString("lblTitleTime.title")); //$NON-NLS-1$
 			lblTitleTime.setVisible(false);
 			lblTitleTime.setHorizontalAlignment(SwingConstants.RIGHT);
 		}
@@ -186,7 +186,7 @@ public class PanelControls extends JPanel {
 
 	private JLabel getLblTitleCycles() {
 		if (lblTitleCycles == null) {
-			lblTitleCycles = new JLabel("Cycles:");
+			lblTitleCycles = new JLabel(Messages.getString("lblTitleCycles.title")); //$NON-NLS-1$
 			lblTitleCycles.setVisible(false);
 			lblTitleCycles.setHorizontalAlignment(SwingConstants.RIGHT);
 		}

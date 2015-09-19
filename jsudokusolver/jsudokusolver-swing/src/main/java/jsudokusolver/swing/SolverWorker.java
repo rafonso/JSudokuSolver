@@ -16,7 +16,8 @@ import jsudokusolver.core.CellStatus;
 import jsudokusolver.core.Puzzle;
 import jsudokusolver.core.PuzzleStatus;
 import jsudokusolver.core.Solver;
-import jsudokusolver.core.exception.SudokuException;
+import jsudokusolver.core.exception.CellWithNoRemaningValueExcetion;
+import jsudokusolver.core.exception.NoSolutionPuzzleException;
 
 class SolverWorker extends SwingWorker<Void, Void>implements ItemListener, PropertyChangeListener {
 
@@ -118,9 +119,15 @@ class SolverWorker extends SwingWorker<Void, Void>implements ItemListener, Prope
 			this.solver.start(puzzle);
 
 			return null;
-		} catch (SudokuException e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this.lblCycles, e.getMessage(), "Fail on solving", JOptionPane.ERROR_MESSAGE);
+		} catch (CellWithNoRemaningValueExcetion e) {
+			JOptionPane.showMessageDialog(this.lblCycles,
+					Messages.getString("puzzle.error.cell_no_remaining_value", e.getCell().getRow(),
+							e.getCell().getColumn()),
+					Messages.getString("puzzle.error.title"), JOptionPane.ERROR_MESSAGE);
+			throw e;
+		} catch (NoSolutionPuzzleException e) {
+			JOptionPane.showMessageDialog(this.lblCycles, Messages.getString("puzzle.error.no_solution"),
+					Messages.getString("puzzle.error.title"), JOptionPane.ERROR_MESSAGE);
 			throw e;
 		}
 	}

@@ -10,7 +10,7 @@ import javax.swing.JOptionPane;
 import jsudokusolver.core.Puzzle;
 import jsudokusolver.core.PuzzleStatus;
 import jsudokusolver.core.Validator;
-import jsudokusolver.core.exception.SudokuException;
+import jsudokusolver.core.exception.EmptyPuzzleException;
 import jsudokusolver.core.exception.RepeatedCellsException;
 import jsudokusolver.swing.PanelControls.ButtonToShow;
 
@@ -42,14 +42,15 @@ public class PuzzlePanelControlsListener implements PropertyChangeListener, Acti
 					this.panelControls.getLblCycles(), this.panelControls.getLblTime());
 			this.solverWorker.execute();
 		} catch (RepeatedCellsException e) {
-			String msg = String.format("Repeated value %d in %s %d, cells [%d,%d] and [%d,%d]", e.getRepeatedValue(),
-					e.getPuzzlePositions().getDescription(), e.getPosition(), //
+			String msg = Messages.getString("puzzle.error.repeated_cells", e.getRepeatedValue(),
+					Messages.getString("PuzzlePositions." + e.getPuzzlePositions()), e.getPosition(), //
 					e.getCell1().getRow(), e.getCell1().getColumn(), //
 					e.getCell2().getRow(), e.getCell2().getColumn());
-			JOptionPane.showMessageDialog(this.panelControls, msg, "Puzzle Error!", JOptionPane.ERROR_MESSAGE);
-		} catch (SudokuException e) {
-			JOptionPane.showMessageDialog(this.panelControls, e.getMessage(), "Puzzle Error!",
+			JOptionPane.showMessageDialog(this.panelControls, msg, Messages.getString("puzzle.error.title"),
 					JOptionPane.ERROR_MESSAGE);
+		} catch (EmptyPuzzleException e) {
+			JOptionPane.showMessageDialog(this.panelControls, Messages.getString("puzzle.error.empty_puzzle"),
+					Messages.getString("puzzle.error.title"), JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
