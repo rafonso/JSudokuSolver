@@ -12,6 +12,7 @@ import java.util.function.Predicate;
 import org.junit.Test;
 
 import jsudokusolver.core.Puzzle.CellsFormatter;
+import jsudokusolver.core.exception.ParserException;
 
 public class PuzzleTest {
 
@@ -108,14 +109,14 @@ public class PuzzleTest {
 		p.parse("1234");
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test(expected = ParserException.class)
 	public void parseInvalidString() {
 		Puzzle p = new Puzzle();
 
 		p.parse("ASDFGHJKL");
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test(expected = ParserException.class)
 	public void parseInvalidLenght() {
 		Puzzle p = new Puzzle();
 

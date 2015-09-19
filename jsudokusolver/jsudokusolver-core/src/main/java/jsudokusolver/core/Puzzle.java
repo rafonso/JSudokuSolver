@@ -17,6 +17,8 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import jsudokusolver.core.exception.ParserException;
+
 /**
  * Represents a Sudoku Puzzle, with its respectives {@link Cell}s.
  */
@@ -173,11 +175,11 @@ public class Puzzle {
 	public void parse(String str) {
 		assert(this.status == PuzzleStatus.WAITING);
 		if (!str.matches("^(\\d|.)+$")) {
-			throw new IllegalArgumentException("Invalid Puzzle: " + str);
+			throw new ParserException(str);
 		}
 		char[] digits = str.replaceAll("\\.", "").toCharArray();
 		if (digits.length != 81) {
-			throw new IllegalArgumentException("Puzzle should have 81 digits! " + str);
+			throw new ParserException(str);
 		}
 
 		for (int pos = 0; pos < digits.length; pos++) {

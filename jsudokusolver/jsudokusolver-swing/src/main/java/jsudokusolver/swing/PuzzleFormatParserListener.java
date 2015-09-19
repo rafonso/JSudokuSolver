@@ -14,6 +14,7 @@ import javax.swing.JOptionPane;
 import jsudokusolver.core.Puzzle;
 import jsudokusolver.core.Puzzle.CellsFormatter;
 import jsudokusolver.core.PuzzleStatus;
+import jsudokusolver.core.exception.ParserException;
 
 public class PuzzleFormatParserListener extends KeyAdapter implements ClipboardOwner {
 
@@ -46,10 +47,10 @@ public class PuzzleFormatParserListener extends KeyAdapter implements ClipboardO
 					this.puzzle.cleanCells();
 					this.puzzle.parse(cells.trim());
 					importingComplete = true;
-				} catch (IllegalArgumentException e) {
-					e.printStackTrace();
-					JOptionPane.showMessageDialog(component, e.getMessage(), Messages.getString("import.error.title"),
-							JOptionPane.ERROR_MESSAGE);
+				} catch (ParserException e) {
+					JOptionPane.showMessageDialog(component,
+							Messages.getString("import.error.message", e.getIrregularPuzzle()),
+							Messages.getString("import.error.title"), JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		} while (!importingComplete);
