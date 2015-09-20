@@ -30,6 +30,7 @@
 		<module>jsudokusolver-core</module>
 		<module>jsudokusolver-console</module>
 		<module>jsudokusolver-swing</module>
+		<module>jsudokusolver-javafx</module>
 	</modules>
 
 	<build>

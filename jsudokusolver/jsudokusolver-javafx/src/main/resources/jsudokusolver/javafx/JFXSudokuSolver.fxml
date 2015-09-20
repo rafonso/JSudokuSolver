@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.BorderPane?>
+
+<BorderPane prefHeight="500.0" prefWidth="350.0" stylesheets="@JFXSudokuSolver.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+	<center>
+		<GridPane id="pnlCells" fx:id="pnlPuzzle" BorderPane.alignment="CENTER">
+			<columnConstraints>
+				<ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="100.0" />
+				<ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="100.0" />
+				<ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="100.0" />
+				<ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="100.0" />
+				<ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="100.0" />
+				<ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="100.0" />
+				<ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="100.0" />
+				<ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="100.0" />
+				<ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="100.0" />
+			</columnConstraints>
+			<rowConstraints>
+				<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
+				<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
+				<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
+				<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
+				<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
+				<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
+				<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
+				<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
+				<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
+			</rowConstraints>
+         <children>
+            <TextField />
+         </children>
+		</GridPane>
+	</center>
+	<bottom>
+		<GridPane id="pnlControls" fx:id="pnlControls" alignment="CENTER" hgap="5.0" vgap="5.0" BorderPane.alignment="CENTER">
+			<columnConstraints>
+				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+			</columnConstraints>
+			<rowConstraints>
+				<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+				<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+				<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+				<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+			</rowConstraints>
+			<children>
+				<Button fx:id="btnRun" alignment="CENTER" mnemonicParsing="false" text="Run" GridPane.halignment="CENTER" />
+				<Button fx:id="btnClean" alignment="CENTER" mnemonicParsing="false" text="Clean" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
+				<StackPane fx:id="pnlStopReset" prefHeight="150.0" prefWidth="200.0" GridPane.columnIndex="2">
+					<children>
+						<Button fx:id="btnStop" disable="true" mnemonicParsing="false" text="Stop" />
+						<Button fx:id="btnReset" disable="true" mnemonicParsing="false" text="Reset" visible="false" />
+					</children>
+				</StackPane>
+				<Label fx:id="lblStepTime" styleClass="label_title" text="Step Time" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
+				<ChoiceBox fx:id="chbStepTime" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+				<Label fx:id="lblMs" text="ms" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+				<Label fx:id="lblTitleTime" styleClass="label_title" text="Time:" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
+				<Label fx:id="lblTime" text="000000" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
+				<Label fx:id="lblTimeMs" text="ms" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+				<Label fx:id="lblTitleCycles" styleClass="label_title" text="Cycles:" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
+				<Label fx:id="lblCycles" text="0000" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
+			</children>
+			<BorderPane.margin>
+				<Insets />
+			</BorderPane.margin>
+			<opaqueInsets>
+				<Insets />
+			</opaqueInsets>
+			<padding>
+				<Insets top="5.0" />
+			</padding>
+		</GridPane>
+	</bottom>
+   
+   <padding>
+      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+   </padding>
+</BorderPane>
