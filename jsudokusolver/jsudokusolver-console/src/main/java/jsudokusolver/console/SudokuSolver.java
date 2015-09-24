@@ -58,7 +58,7 @@ public class SudokuSolver {
 		Instant t1 = Instant.now();
 
 		// System.out.println(formatPuzzle(puzzle));
-		System.out.println("Puzzle Solved: " + puzzle.formatCells(CellsFormatter.ALL));
+		System.out.println("Puzzle Solved : " + puzzle.formatCells(CellsFormatter.ALL));
 		System.out.printf("Time: %d ms", (t1.toEpochMilli() - t0.toEpochMilli()));
 	}
 
