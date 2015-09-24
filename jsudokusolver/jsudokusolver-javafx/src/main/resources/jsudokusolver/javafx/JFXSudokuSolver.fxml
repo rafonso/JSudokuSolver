@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.BorderPane?>
 
-<BorderPane prefHeight="500.0" prefWidth="350.0" stylesheets="@JFXSudokuSolver.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane minHeight="450.0" prefHeight="450.0" prefWidth="350.0" stylesheets="@JFXSudokuSolver.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
 	<center>
 		<GridPane id="pnlCells" fx:id="pnlCells" BorderPane.alignment="CENTER">
 			<columnConstraints>

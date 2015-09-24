@@ -18,6 +18,7 @@ public class JFXSudokuSolver extends Application {
 		Parent parent = FXMLLoader.load(getClass().getResource("JFXSudokuSolver.fxml"));
 		Scene scene = new Scene(parent);
 		primaryStage.setScene(scene);
+		primaryStage.setResizable(false);
 		primaryStage.setTitle("JavaFX Sudoku Solver");
 
 		GridPane pnlCells = (GridPane) scene.lookup("#pnlCells");

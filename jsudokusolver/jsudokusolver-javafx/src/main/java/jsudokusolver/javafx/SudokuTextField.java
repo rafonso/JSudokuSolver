@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 
 public class SudokuTextField extends TextField {
 
@@ -25,16 +26,29 @@ public class SudokuTextField extends TextField {
 
 	private final int position;
 
-	public SudokuTextField(int row, int column) {
+	public SudokuTextField(int row, int col) {
 		super();
 		this.row = row;
-		this.column = column;
-		this.position = (row - 1) * 9 + column - 1;
+		this.column = col;
+		this.position = (row - 1) * 9 + col - 1;
+		
+		// Borders
+		int top = (row == 1) ? 3 : 1;
+		int left = (col == 1) ? 3: 1;
+		int bottom = (row == 9) ? 3 : ((row == 3) || (row == 6)) ? 3 : 1;
+		int right = (col == 9) ? 3 : ((col == 3) || (col == 6)) ? 3 : 1;
+		super.setStyle(super.getStyle() + String.format("%n\t-fx-border-width: %d %d %d %d;", top, right, bottom, left));
 
-		super.setId("cell" + row + column);
+		super.setId("cell" + row + col);
 		super.focusedProperty().addListener(this::handleFocus);
 		super.addEventFilter(KeyEvent.KEY_RELEASED, this::keyReleased);
 		super.addEventFilter(KeyEvent.KEY_PRESSED, this::keyPressed);
+		super.addEventFilter(MouseEvent.MOUSE_CLICKED, me -> {
+			if(me.getClickCount() == 2) {
+				System.out.println(
+				getScene().getWidth() + " - " + getScene().getHeight());
+			}
+		});
 	}
 
 	private void handleFocus(ObservableValue<? extends Boolean> ov, Boolean oldValue, Boolean isReceivingFocus) {

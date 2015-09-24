@@ -10,10 +10,15 @@ Button {
 SudokuTextField {
 	-fx-alignment: center;
 	-fx-pref-column-count: 1;
+	-fx-border-color: black;
+	-fx-border-style: solid;
+}
+
+#pnlCells {
 }
 
 #pnlControls, #pnlCells {
-	-fx-grid-lines-visible: true;
+	-fx-grid-lines-visible: false;
 }
 
 .label_title {
