@@ -9,7 +9,7 @@ Button {
 
 SudokuTextField {
 	-fx-alignment: center;
-	-fx-pref-column-count: 1;
+	-fx-pref-column-count: 1.0;
 	-fx-border-color: black;
 	-fx-border-style: solid;
 }
@@ -23,4 +23,8 @@ SudokuTextField {
 
 .label_title {
 	-fx-text-alignment: right;
+}
+
+.label_title.counter,  .counter {
+    visibility: hidden;
 }
