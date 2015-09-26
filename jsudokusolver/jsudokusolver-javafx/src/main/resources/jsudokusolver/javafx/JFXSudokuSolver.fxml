@@ -4,73 +4,130 @@
 <?import javafx.scene.control.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.collections.*?>
 <?import javafx.scene.layout.BorderPane?>
 
-<BorderPane minHeight="450.0" onKeyTyped="#keyTyped" prefHeight="450.0" prefWidth="350.0" stylesheets="@JFXSudokuSolver.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jsudokusolver.javafx.SudokuSolverController">
+<BorderPane minHeight="450.0" onKeyTyped="#keyTyped"
+	prefHeight="450.0" prefWidth="350.0" stylesheets="@JFXSudokuSolver.css"
+	xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+	fx:controller="jsudokusolver.javafx.SudokuSolverController">
 	<center>
-		<GridPane id="pnlCells" fx:id="pnlCells" BorderPane.alignment="CENTER">
+		<GridPane id="pnlCells" fx:id="pnlCells"
+			BorderPane.alignment="CENTER">
 			<columnConstraints>
-				<ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="100.0" />
-				<ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="100.0" />
-				<ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="100.0" />
-				<ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="100.0" />
-				<ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="100.0" />
-				<ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="100.0" />
-				<ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="100.0" />
-				<ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="100.0" />
-				<ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="100.0" />
+				<ColumnConstraints hgrow="NEVER" minWidth="10.0"
+					prefWidth="100.0" />
+				<ColumnConstraints hgrow="NEVER" minWidth="10.0"
+					prefWidth="100.0" />
+				<ColumnConstraints hgrow="NEVER" minWidth="10.0"
+					prefWidth="100.0" />
+				<ColumnConstraints hgrow="NEVER" minWidth="10.0"
+					prefWidth="100.0" />
+				<ColumnConstraints hgrow="NEVER" minWidth="10.0"
+					prefWidth="100.0" />
+				<ColumnConstraints hgrow="NEVER" minWidth="10.0"
+					prefWidth="100.0" />
+				<ColumnConstraints hgrow="NEVER" minWidth="10.0"
+					prefWidth="100.0" />
+				<ColumnConstraints hgrow="NEVER" minWidth="10.0"
+					prefWidth="100.0" />
+				<ColumnConstraints hgrow="NEVER" minWidth="10.0"
+					prefWidth="100.0" />
 			</columnConstraints>
 			<rowConstraints>
-				<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
-				<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
-				<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
-				<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
-				<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
-				<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
-				<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
-				<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
-				<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
+				<RowConstraints minHeight="10.0" prefHeight="30.0"
+					vgrow="ALWAYS" />
+				<RowConstraints minHeight="10.0" prefHeight="30.0"
+					vgrow="ALWAYS" />
+				<RowConstraints minHeight="10.0" prefHeight="30.0"
+					vgrow="ALWAYS" />
+				<RowConstraints minHeight="10.0" prefHeight="30.0"
+					vgrow="ALWAYS" />
+				<RowConstraints minHeight="10.0" prefHeight="30.0"
+					vgrow="ALWAYS" />
+				<RowConstraints minHeight="10.0" prefHeight="30.0"
+					vgrow="ALWAYS" />
+				<RowConstraints minHeight="10.0" prefHeight="30.0"
+					vgrow="ALWAYS" />
+				<RowConstraints minHeight="10.0" prefHeight="30.0"
+					vgrow="ALWAYS" />
+				<RowConstraints minHeight="10.0" prefHeight="30.0"
+					vgrow="ALWAYS" />
 			</rowConstraints>
 		</GridPane>
 	</center>
 	<bottom>
-		<GridPane fx:id="pnlControls" alignment="CENTER" hgap="5.0" vgap="5.0" BorderPane.alignment="CENTER">
+		<GridPane fx:id="pnlControls" alignment="CENTER" hgap="5.0"
+			vgap="5.0" BorderPane.alignment="CENTER">
 			<columnConstraints>
-				<ColumnConstraints hgrow="ALWAYS" minWidth="10.0" percentWidth="33.0" prefWidth="100.0" />
-				<ColumnConstraints hgrow="ALWAYS" minWidth="10.0" percentWidth="33.0" prefWidth="100.0" />
-				<ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
+				<ColumnConstraints hgrow="ALWAYS" minWidth="10.0"
+					percentWidth="33.0" prefWidth="100.0" />
+				<ColumnConstraints hgrow="ALWAYS" minWidth="10.0"
+					percentWidth="33.0" prefWidth="100.0" />
+				<ColumnConstraints hgrow="ALWAYS" minWidth="10.0"
+					prefWidth="100.0" />
 			</columnConstraints>
 			<rowConstraints>
-				<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-				<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-				<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-				<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+				<RowConstraints minHeight="10.0" prefHeight="30.0"
+					vgrow="SOMETIMES" />
+				<RowConstraints minHeight="10.0" prefHeight="30.0"
+					vgrow="SOMETIMES" />
+				<RowConstraints minHeight="10.0" prefHeight="30.0"
+					vgrow="SOMETIMES" />
+				<RowConstraints minHeight="10.0" prefHeight="30.0"
+					vgrow="SOMETIMES" />
 			</rowConstraints>
 			<children>
-				<Button fx:id="btnRun" alignment="CENTER" mnemonicParsing="false" onAction="#runPressed" text="Run" GridPane.halignment="CENTER" />
-				<Button fx:id="btnClean" alignment="CENTER" mnemonicParsing="false" onAction="#cleanPressed" text="Clean" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
-				<StackPane fx:id="pnlStopReset" prefHeight="150.0" prefWidth="200.0" GridPane.columnIndex="2">
+				<Button fx:id="btnRun" alignment="CENTER" mnemonicParsing="false"
+					onAction="#runPressed" text="Run" GridPane.halignment="CENTER" />
+				<Button fx:id="btnClean" alignment="CENTER" 
+					onAction="#cleanPressed" text="Clean" GridPane.columnIndex="1"
+					GridPane.halignment="CENTER" />
+				<StackPane fx:id="pnlStopReset" prefHeight="150.0"
+					prefWidth="200.0" GridPane.columnIndex="2">
 					<children>
-						<Button fx:id="btnStop" disable="true" mnemonicParsing="false" onAction="#stopPressed" text="Stop" />
-						<Button fx:id="btnReset" disable="true" mnemonicParsing="false" onAction="#resetPressed" text="Reset" visible="false" />
+						<Button fx:id="btnStop" disable="true" 
+							onAction="#stopPressed" text="Stop" />
+						<Button fx:id="btnReset" disable="true" 
+							onAction="#resetPressed" text="Reset" visible="false" />
 					</children>
 				</StackPane>
-				<Label fx:id="lblStepTime" styleClass="label-title" text="Step Time" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
-				<ComboBox fx:id="cmbStepTime" prefWidth="150.0" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
+				<Label fx:id="lblStepTime" styleClass="label-title" text="Step Time"
+					GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
+				<ComboBox fx:id="cmbStepTime" prefWidth="150.0"
+					GridPane.columnIndex="1" GridPane.halignment="RIGHT"
+					GridPane.rowIndex="1">
+					<items>
+						<FXCollections fx:factory="observableArrayList">
+							<Integer fx:value="0" />
+							<Integer fx:value="1" />
+							<Integer fx:value="5" />
+							<Integer fx:value="10" />
+							<Integer fx:value="50" />
+							<Integer fx:value="100" />
+							<Integer fx:value="500" />
+							<Integer fx:value="1000" />
+						</FXCollections>
+					</items>
+					<value>
+						<Integer fx:value="0" />
+					</value>
 				</ComboBox>
-				<Label fx:id="lblMs" text="ms" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-				<Label fx:id="lblTitleTime" styleClass="label-title counter" text="Time:" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
-				<Label fx:id="lblTime" styleClass="counter" text="000000" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
-				<Label fx:id="lblTimeMs" styleClass="counter" text="ms" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-				<Label fx:id="lblTitleCycles" styleClass="label-title counter" text="Cycles:" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
-				<Label fx:id="lblCycles" styleClass="counter" text="0000" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
+				<Label fx:id="lblMs" text="ms" GridPane.columnIndex="2"
+					GridPane.rowIndex="1" />
+				<Label fx:id="lblTitleTime" styleClass="label-title counter"
+					text="Time:" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
+				<Label fx:id="lblTime" styleClass="counter" text="000000"
+					GridPane.columnIndex="1" GridPane.halignment="RIGHT"
+					GridPane.rowIndex="2" />
+				<Label fx:id="lblTimeMs" styleClass="counter" text="ms"
+					GridPane.columnIndex="2" GridPane.rowIndex="2" />
+				<Label fx:id="lblTitleCycles" styleClass="label-title counter"
+					text="Cycles:" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
+				<Label fx:id="lblCycles" styleClass="counter" text="0000"
+					GridPane.columnIndex="1" GridPane.halignment="RIGHT"
+					GridPane.rowIndex="3" />
 			</children>
-			<BorderPane.margin>
-				<Insets />
-			</BorderPane.margin>
-			<opaqueInsets>
-				<Insets />
-			</opaqueInsets>
 			<padding>
 				<Insets top="5.0" />
 			</padding>

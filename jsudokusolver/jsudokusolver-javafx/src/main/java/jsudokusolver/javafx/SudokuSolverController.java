@@ -75,11 +75,11 @@ public class SudokuSolverController implements Initializable {
 	@FXML
 	public void stopPressed() {
 		System.out.println("SudokuSolverController.stopPressed()");
-		
+
 		Alert alert = new Alert(AlertType.INFORMATION);
 		alert.setTitle("teste");
 		alert.setHeaderText("Information Alert");
-		String s ="123456789.123456789.123456789.123456789.123456789.123456789.123456789.123456789.123456789";
+		String s = "123456789.123456789.123456789.123456789.123456789.123456789.123456789.123456789.123456789";
 		alert.setContentText(s);
 		alert.show();
 	}
@@ -87,20 +87,24 @@ public class SudokuSolverController implements Initializable {
 	@FXML
 	public void resetPressed() {
 		System.out.println("SudokuSolverController.resetPressed()");
-		
-		TextInputDialog dialog = new TextInputDialog("");
-		dialog.setTitle("Test");
-		dialog.setHeaderText("Enter some text, or use default value.");
+
+		TextInputDialog dialog = new TextInputDialog();
+		dialog.setTitle("Input Puzzle");
+		dialog.setHeaderText("Enter the puzzle. 1 to 9 for filled Cells. 0 for empty Cells. Dots(.) are optionals");
+		dialog.getEditor().addEventFilter(KeyEvent.KEY_TYPED, keyEvent -> {
+			if (!keyEvent.getCharacter().matches("[0-9.]")) {
+				keyEvent.consume();
+			}
+		});
 
 		Optional<String> result = dialog.showAndWait();
-		System.out.println("Text entered: " + result.get());
+		if (result.isPresent()) {
+			System.out.println("Text entered: " + result.get());
+		}
 	}
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		// this.cmbStepTime.setValue(0);
-		this.cmbStepTime.setItems(FXCollections.observableArrayList(0, 1, 5, 10, 50, 100, 500, 1000));
-		this.cmbStepTime.setValue(0);
 		this.stepTime.bind(this.cmbStepTime.getSelectionModel().selectedItemProperty());
 		this.stepTime.addListener((ov, oldValue, newValue) -> System.out.println("stepTime = " + newValue));
 
