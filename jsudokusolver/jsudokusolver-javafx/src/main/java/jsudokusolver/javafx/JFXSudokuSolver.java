@@ -20,7 +20,7 @@ public class JFXSudokuSolver extends Application {
 		Scene scene = new Scene(parent);
 		primaryStage.setScene(scene);
 		primaryStage.setResizable(false);
-		primaryStage.getIcons().add(new Image("/icons/jsudokusolver.png"));
+		primaryStage.getIcons().add(new Image("/icons/jfxsudokusolver.png"));
 		primaryStage.setTitle("JavaFX Sudoku Solver");
 
 		GridPane pnlCells = (GridPane) scene.lookup("#pnlCells");

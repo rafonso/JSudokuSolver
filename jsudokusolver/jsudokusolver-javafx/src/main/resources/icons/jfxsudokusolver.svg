@@ -15,7 +15,10 @@
    sodipodi:version="0.32"
    inkscape:version="0.91 r13725"
    version="1.0"
-   sodipodi:docname="jsudokusolver.svg">
+   sodipodi:docname="jfxsudokusolver.svg"
+   inkscape:export-filename="C:\Users\rucaf_000\Documents\GitHub\JSudokuSolver\jsudokusolver\jsudokusolver-javafx\src\main\resources\icons\jfxsudokusolver.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
   <defs
      id="defs4" />
   <sodipodi:namedview
@@ -29,8 +32,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.4142136"
-     inkscape:cx="179.63207"
-     inkscape:cy="146.99473"
+     inkscape:cx="218.04822"
+     inkscape:cy="175.279"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      inkscape:window-width="1366"
@@ -187,50 +190,6 @@
          x="304.64487"
          y="332.34952">R</tspan></text>
     <g
-       id="javaLogo"
-       transform="matrix(0.27409187,0,0,0.27409187,324.56865,300.50445)">
-      <path
-         id="path3365"
-         d="m 42.806239,490.6862 c 0,0 -14.178,8.245 10.09,11.035 29.4,3.354 44.426,2.873 76.825001,-3.259 0,0 8.518,5.341 20.414,9.967 -72.630001,31.128 -164.376,-1.803 -107.329001,-17.743"
-         style="fill:#5382a1"
-         inkscape:connector-curvature="0" />
-      <path
-         id="path3367"
-         d="m 33.931239,450.0662 c 0,0 -15.902,11.771 8.384,14.283 31.406,3.24 56.208,3.505 99.125001,-4.759 0,0 5.936,6.018 15.27,9.309 -87.814001,25.678 -185.623,2.025 -122.779001,-18.833"
-         style="fill:#5382a1"
-         inkscape:connector-curvature="0" />
-      <path
-         id="path3369"
-         d="m 108.75024,381.1612 c 17.896,20.604 -4.702,39.145 -4.702,39.145 0,0 45.441,-23.458 24.572,-52.833 -19.491,-27.394 -34.438001,-41.005 46.479,-87.934 0,0 -127.013001,31.722 -66.349,101.622"
-         style="fill:#e76f00"
-         inkscape:connector-curvature="0" />
-      <path
-         id="path3371"
-         d="m 204.80924,520.7312 c 0,0 10.492,8.645 -11.555,15.333 -41.923,12.7 -174.488001,16.535 -211.314,0.506 -13.238,-5.759 11.5869997,-13.751 19.3959997,-15.428 8.143999,-1.766 12.7979993,-1.437 12.7979993,-1.437 -14.72199932,-10.371 -95.156999,20.364 -40.856999,29.166 148.084,24.015 269.943,-10.814 231.532,-28.14"
-         style="fill:#5382a1"
-         inkscape:connector-curvature="0" />
-      <path
-         id="path3373"
-         d="m 49.624239,407.9792 c 0,0 -67.430999,16.016 -23.879,21.832 18.389,2.462 55.047,1.905 89.193001,-0.956 27.906,-2.354 55.927,-7.359 55.927,-7.359 0,0 -9.84,4.214 -16.959,9.075 -68.475001,18.009 -200.756,9.631 -162.6740003,-8.79 32.2059993,-15.568 58.3919993,-13.802 58.3919993,-13.802"
-         style="fill:#5382a1"
-         inkscape:connector-curvature="0" />
-      <path
-         id="path3375"
-         d="m 170.58724,475.5932 c 69.608,-36.171 37.424,-70.931 14.96,-66.248 -5.506,1.146 -7.961,2.139 -7.961,2.139 0,0 2.044,-3.202 5.948,-4.588 44.441,-15.624 78.619,46.081 -14.346,70.52 0,10e-4 1.077,-0.962 1.399,-1.823"
-         style="fill:#5382a1"
-         inkscape:connector-curvature="0" />
-      <path
-         id="path3377"
-         d="m 128.62024,203.7612 c 0,0 38.55,38.563 -36.563001,97.862 -60.233,47.568 -13.735,74.69 -0.025,105.678 -35.159,-31.722 -60.961,-59.647 -43.651,-85.637 25.407,-38.151 95.793001,-56.648 80.239001,-117.903"
-         style="fill:#e76f00"
-         inkscape:connector-curvature="0" />
-      <path
-         id="path3379"
-         d="m 56.464239,573.6082 c 66.815001,4.277 169.417001,-2.373 171.847001,-33.988 0,0 -4.671,11.985 -55.219,21.503 -57.028,10.732 -127.364001,9.479 -169.0810003,2.601 0.001,-10e-4 8.5399993,7.068 52.4529993,9.884"
-         style="fill:#5382a1"
-         inkscape:connector-curvature="0" />
-    </g>
-    <g
        transform="matrix(0.3720817,0,0,0.3720817,64.082407,357.19829)"
        id="gear"
        inkscape:label="#gear">
@@ -243,5 +202,28 @@
            id="path3437" />
       </g>
     </g>
+    <text
+       xml:space="preserve"
+       style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:117.78125px;line-height:125%;font-family:Corbel;-inkscape-font-specification:'Corbel, Italic';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#0000ff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="197.96281"
+       y="450.1311"
+       id="textF"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3370"
+         x="197.96281"
+         y="450.1311">F</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:117.78125px;line-height:125%;font-family:Corbel;-inkscape-font-specification:'Corbel, Italic';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#0000ff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="322.09946"
+       y="450.1311"
+       id="textX"
+       sodipodi:linespacing="125%"
+       inkscape:label="#textX"><tspan
+         sodipodi:role="line"
+         id="tspan3376"
+         x="322.09946"
+         y="450.1311">x</tspan></text>
   </g>
 </svg>
