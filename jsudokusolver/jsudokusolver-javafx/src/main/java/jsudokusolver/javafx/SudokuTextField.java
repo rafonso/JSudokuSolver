@@ -1,16 +1,12 @@
 package jsudokusolver.javafx;
 
 import java.util.function.Function;
-import java.util.regex.Pattern;
 
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
 
 public class SudokuTextField extends TextField {
-
-	private static final Pattern PATTERN = Pattern.compile("^[0-9 ]$");
 
 	private static final Function<SudokuTextField, Integer> gotoNextPosition = (txf -> (txf.getPosition() + 1) % 81);
 	private static final Function<SudokuTextField, Integer> gotoPrevPosition = (txf -> (txf.getPosition() > 0)
@@ -31,34 +27,46 @@ public class SudokuTextField extends TextField {
 		this.row = row;
 		this.column = col;
 		this.position = (row - 1) * 9 + col - 1;
-		
+
 		// Borders
 		int top = (row == 1) ? 3 : 1;
-		int left = (col == 1) ? 3: 1;
+		int left = (col == 1) ? 3 : 1;
 		int bottom = (row == 9) ? 3 : ((row == 3) || (row == 6)) ? 3 : 1;
 		int right = (col == 9) ? 3 : ((col == 3) || (col == 6)) ? 3 : 1;
-		super.setStyle(super.getStyle() + String.format("%n\t-fx-border-width: %d %d %d %d;", top, right, bottom, left));
+		super.setStyle(
+				super.getStyle() + String.format("%n\t-fx-border-width: %d %d %d %d;", top, right, bottom, left));
 
 		super.setId("cell" + row + col);
 		super.focusedProperty().addListener(this::handleFocus);
 		super.addEventFilter(KeyEvent.KEY_RELEASED, this::keyReleased);
 		super.addEventFilter(KeyEvent.KEY_PRESSED, this::keyPressed);
-		super.addEventFilter(MouseEvent.MOUSE_CLICKED, me -> {
-			if(me.getClickCount() == 2) {
-				System.out.println(
-				getScene().getWidth() + " - " + getScene().getHeight());
-			}
-		});
+		super.addEventFilter(KeyEvent.KEY_TYPED, this::keyTyped);
+		// super.addEventFilter(MouseEvent.MOUSE_CLICKED, me -> {
+		// if(me.getClickCount() == 2) {
+		// System.out.println(
+		// getScene().getWidth() + " - " + getScene().getHeight());
+		// }
+		// });
 	}
 
 	private void handleFocus(ObservableValue<? extends Boolean> ov, Boolean oldValue, Boolean isReceivingFocus) {
+
 		if (isReceivingFocus) {
+//			System.out.println(this.getId() + " receiving focus");
 			SudokuTextField.this.selectAll();
 		}
 	}
 
 	private void gotoCell(Function<SudokuTextField, Integer> action) {
 		this.getParent().getChildrenUnmodifiable().get(action.apply(this)).requestFocus();
+	}
+
+	private void keyTyped(final KeyEvent keyEvent) {
+		if (!keyEvent.getCharacter().matches("[1-9 ]")) {
+			keyEvent.consume();
+		} else if (!this.getText().isEmpty()) {
+			this.clear();
+		}
 	}
 
 	private void keyPressed(final KeyEvent keyEvent) {
@@ -92,7 +100,6 @@ public class SudokuTextField extends TextField {
 		case TAB:
 			break;
 		default:
-			System.out.println(this.getId() + ".keyPressed(): " + keyEvent.getCode() + " " + keyEvent.isConsumed());
 			keyEvent.consume();
 		}
 	}
@@ -122,29 +129,7 @@ public class SudokuTextField extends TextField {
 		case TAB:
 			break;
 		default:
-			System.out.println(this.getId() + ".keyReleased(): " + keyEvent.getCode() + " " + keyEvent.isConsumed());
 			keyEvent.consume();
-		}
-	}
-
-	private String getFinalText(String text) {
-		char ch = text.charAt(0);
-		return ch > '0' ? String.valueOf(ch) : "";
-	}
-
-	@Override
-	public void replaceText(int start, int end, String insertedText) {
-		System.out.println(super.getId() + ".replaceText(" + start + ", " + end + ", '" + insertedText + "')");
-		if ((start == 0) && PATTERN.matcher(insertedText).matches()) {
-			super.replaceText(start, end, this.getFinalText(insertedText));
-		}
-	}
-
-	@Override
-	public void replaceSelection(String replacement) {
-		System.out.println(super.getId() + ".replaceSelection('" + replacement + "')");
-		if (PATTERN.matcher(replacement).matches()) {
-			super.replaceSelection(this.getFinalText(replacement));
 		}
 	}
 

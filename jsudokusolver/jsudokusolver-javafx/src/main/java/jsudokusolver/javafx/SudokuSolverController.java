@@ -12,6 +12,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
+import javafx.scene.input.KeyEvent;
 
 public class SudokuSolverController implements Initializable {
 
@@ -87,6 +88,11 @@ public class SudokuSolverController implements Initializable {
 			this.btnReset.setVisible(!showStop);
 		});
 
+	}
+
+	@FXML
+	public void keyTyped(KeyEvent event) {
+		System.out.println("SudokuSolverController.keyTyped(): " + event);
 	}
 
 }
