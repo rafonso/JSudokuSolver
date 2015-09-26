@@ -41,18 +41,11 @@ public class SudokuTextField extends TextField {
 		super.addEventFilter(KeyEvent.KEY_RELEASED, this::keyReleased);
 		super.addEventFilter(KeyEvent.KEY_PRESSED, this::keyPressed);
 		super.addEventFilter(KeyEvent.KEY_TYPED, this::keyTyped);
-		// super.addEventFilter(MouseEvent.MOUSE_CLICKED, me -> {
-		// if(me.getClickCount() == 2) {
-		// System.out.println(
-		// getScene().getWidth() + " - " + getScene().getHeight());
-		// }
-		// });
 	}
 
 	private void handleFocus(ObservableValue<? extends Boolean> ov, Boolean oldValue, Boolean isReceivingFocus) {
 
 		if (isReceivingFocus) {
-//			System.out.println(this.getId() + " receiving focus");
 			SudokuTextField.this.selectAll();
 		}
 	}

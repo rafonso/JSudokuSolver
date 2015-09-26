@@ -1,18 +1,24 @@
 package jsudokusolver.javafx;
 
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.layout.StackPane;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.StackPane;
 
 public class SudokuSolverController implements Initializable {
 
@@ -42,6 +48,8 @@ public class SudokuSolverController implements Initializable {
 
 	private BooleanProperty stopVisible = new SimpleBooleanProperty(true);
 
+	private IntegerProperty stepTime = new SimpleIntegerProperty();
+
 	private boolean disableBtns = true;
 
 	public SudokuSolverController() {
@@ -67,11 +75,25 @@ public class SudokuSolverController implements Initializable {
 	@FXML
 	public void stopPressed() {
 		System.out.println("SudokuSolverController.stopPressed()");
+		
+		Alert alert = new Alert(AlertType.INFORMATION);
+		alert.setTitle("teste");
+		alert.setHeaderText("Information Alert");
+		String s ="123456789.123456789.123456789.123456789.123456789.123456789.123456789.123456789.123456789";
+		alert.setContentText(s);
+		alert.show();
 	}
 
 	@FXML
 	public void resetPressed() {
 		System.out.println("SudokuSolverController.resetPressed()");
+		
+		TextInputDialog dialog = new TextInputDialog("");
+		dialog.setTitle("Test");
+		dialog.setHeaderText("Enter some text, or use default value.");
+
+		Optional<String> result = dialog.showAndWait();
+		System.out.println("Text entered: " + result.get());
 	}
 
 	@Override
@@ -79,15 +101,11 @@ public class SudokuSolverController implements Initializable {
 		// this.cmbStepTime.setValue(0);
 		this.cmbStepTime.setItems(FXCollections.observableArrayList(0, 1, 5, 10, 50, 100, 500, 1000));
 		this.cmbStepTime.setValue(0);
-		this.cmbStepTime.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-			System.out.println("SudokuSolverController.initialize(): " + oldValue + " -> " + newValue);
-		});
+		this.stepTime.bind(this.cmbStepTime.getSelectionModel().selectedItemProperty());
+		this.stepTime.addListener((ov, oldValue, newValue) -> System.out.println("stepTime = " + newValue));
 
-		this.stopVisible.addListener((observable, oldValue, showStop) -> {
-			this.btnStop.setVisible(showStop);
-			this.btnReset.setVisible(!showStop);
-		});
-
+		this.btnStop.visibleProperty().bind(this.stopVisible);
+		this.btnReset.visibleProperty().bind(this.stopVisible.not());
 	}
 
 	@FXML

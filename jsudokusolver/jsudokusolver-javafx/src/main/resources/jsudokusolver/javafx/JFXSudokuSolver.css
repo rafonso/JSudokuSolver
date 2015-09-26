@@ -9,6 +9,7 @@ Button {
     -fx-background-size: 32.0px;
     -fx-background-repeat: no-repeat;
     -fx-content-display: right;
+    show-mnemonic: true;
     /*
     -fx-alignment: center-right;
     */
@@ -28,11 +29,11 @@ SudokuTextField {
 	-fx-grid-lines-visible: false;
 }
 
-.label_title {
+.label-title {
 	-fx-text-alignment: right;
 }
 
-.label_title.counter,  .counter {
+.label-title.counter,  .counter {
     /*
     visibility: hidden;
     */
