@@ -5,10 +5,11 @@ import java.util.ResourceBundle;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 
@@ -30,7 +31,7 @@ public class SudokuSolverController implements Initializable {
 	private StackPane pnlStopReset;
 
 	@FXML
-	private ChoiceBox<Integer> chbStepTime;
+	private ComboBox<Integer> cmbStepTime;
 
 	@FXML
 	private Label lblTimeMs;
@@ -74,8 +75,10 @@ public class SudokuSolverController implements Initializable {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		this.chbStepTime.setValue(0);
-		this.chbStepTime.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+		// this.cmbStepTime.setValue(0);
+		this.cmbStepTime.setItems(FXCollections.observableArrayList(0, 1, 5, 10, 50, 100, 500, 1000));
+		this.cmbStepTime.setValue(0);
+		this.cmbStepTime.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
 			System.out.println("SudokuSolverController.initialize(): " + oldValue + " -> " + newValue);
 		});
 

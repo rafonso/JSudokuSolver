@@ -7,6 +7,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import jsudokusolver.core.Cell;
@@ -19,6 +20,7 @@ public class JFXSudokuSolver extends Application {
 		Scene scene = new Scene(parent);
 		primaryStage.setScene(scene);
 		primaryStage.setResizable(false);
+		primaryStage.getIcons().add(new Image("/icons/jsudokusolver.png"));
 		primaryStage.setTitle("JavaFX Sudoku Solver");
 
 		GridPane pnlCells = (GridPane) scene.lookup("#pnlCells");
