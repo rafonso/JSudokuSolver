@@ -126,6 +126,14 @@ public class SudokuTextField extends TextField {
 		}
 	}
 
+	public int getRow() {
+		return row;
+	}
+
+	public int getColumn() {
+		return column;
+	}
+
 	int getPosition() {
 		return position;
 	}

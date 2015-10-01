@@ -19,7 +19,7 @@ import jsudokusolver.core.Cell;
 
 public class JFXSudokuSolver extends Application {
 
-	private void addMnemonicToButton(Scene scene, String btnName, KeyCode keyCode) {
+	private void addAcceleratorToButton(Scene scene, String btnName, KeyCode keyCode) {
 		final ObservableMap<KeyCombination, Runnable> accelerators = scene.getAccelerators();
 		accelerators.put(new KeyCodeCombination(keyCode, KeyCombination.ALT_DOWN),
 				() -> ((Button)scene.lookup("#" + btnName)).fire());
@@ -28,7 +28,8 @@ public class JFXSudokuSolver extends Application {
 	
 	@Override
 	public void start(Stage primaryStage) throws IOException {
-		Parent parent = FXMLLoader.load(getClass().getResource("JFXSudokuSolver.fxml"));
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("JFXSudokuSolver.fxml"));
+		Parent parent = loader.load();
 		Scene scene = new Scene(parent);
 		primaryStage.setScene(scene);
 		primaryStage.setResizable(false);
@@ -36,19 +37,19 @@ public class JFXSudokuSolver extends Application {
 		primaryStage.setTitle("JavaFX Sudoku Solver");
 
 		GridPane pnlCells = (GridPane) scene.lookup("#pnlCells");
-		System.out.println("JFXSudokuSolver.start()" + pnlCells);
-
 		for (int i = 0; i < 81; i++) {
 			int[] positions = Cell.valueToPositions(i);
 			TextField txfCell = new SudokuTextField(positions[0], positions[1]);
 			pnlCells.add(txfCell, positions[1] - 1, positions[0] - 1);
 		}
 
-		this.addMnemonicToButton(scene, "btnClean", KeyCode.C);
-		this.addMnemonicToButton(scene, "btnReset", KeyCode.T);
-		this.addMnemonicToButton(scene, "btnRun", KeyCode.R);
-		this.addMnemonicToButton(scene, "btnStop", KeyCode.S);
+		this.addAcceleratorToButton(scene, "btnClean", KeyCode.C);
+		this.addAcceleratorToButton(scene, "btnReset", KeyCode.T);
+		this.addAcceleratorToButton(scene, "btnRun", KeyCode.R);
+		this.addAcceleratorToButton(scene, "btnStop", KeyCode.S);
 
+		loader.<SudokuSolverController>getController().init();
+		
 		primaryStage.show();
 	}
 
