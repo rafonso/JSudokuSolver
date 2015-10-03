@@ -2,16 +2,18 @@ package jsudokusolver.javafx;
 
 import java.net.URL;
 import java.util.Optional;
+import java.util.Random;
 import java.util.ResourceBundle;
 
+import javafx.beans.binding.Binding;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.StringProperty;
 import javafx.beans.property.adapter.JavaBeanObjectPropertyBuilder;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -22,10 +24,10 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
-import javafx.stage.WindowEvent;
 import jsudokusolver.core.Cell;
 import jsudokusolver.core.CellStatus;
 import jsudokusolver.core.Puzzle;
@@ -72,23 +74,42 @@ public class SudokuSolverController implements Initializable {
 		this.puzzle = new Puzzle();
 	}
 
+	private Random random = new Random();
+
 	private void bindTextFieldAndSudokuCell(Node node) {
 		try {
 			SudokuTextField textField = (SudokuTextField) node;
 			Cell cell = this.puzzle.getCell(textField.getRow(), textField.getColumn());
 
+			@SuppressWarnings("unchecked")
 			ObjectProperty<Optional<Integer>> valueProperty = JavaBeanObjectPropertyBuilder.create().bean(cell)
 					.name("value").build();
-			Bindings.bindBidirectional(textField.textProperty(), valueProperty, new CellValueStringConverter());
+			final StringProperty textProperty = textField.textProperty();
+			// Binding ...
+			Bindings.bindBidirectional(textProperty, valueProperty, new CellValueStringConverter());
 
-			// Just for testing ...
-//			textField.textProperty().addListener((ov, oldValue, newValue) -> {
-//				System.out.printf("%s changing from %s to %s. CELL: %s", textField.getId(), oldValue, newValue, cell);
-//			});
-			valueProperty.addListener((ov, oldValue, newValue) -> {
-				System.out.printf("%s changing from %s to %s. CELL: %s%n", textField.getId(), oldValue, newValue, cell);
+			textField.addEventFilter(MouseEvent.MOUSE_CLICKED, me -> {
+				if (me.getClickCount() == 2) {
+					int x = random.nextInt(10);
+					cell.setValue(x > 0? Optional.of(x): Optional.empty());
+				}
 			});
-			
+
+//			textProperty.addListener(
+//					ov -> System.out.printf("textProperty : invalidation. valueProperty: %n", valueProperty.get()));
+			textProperty.addListener(
+					(ov, oldValue, newValue) -> System.out.printf("textProperty : %s -> %s%n", oldValue, newValue));
+//			valueProperty.addListener(
+//					ov -> System.out.printf("valueProperty: invalidation. textProperty: %n", textProperty.get()));
+			valueProperty.addListener(
+					(ov, oldValue, newValue) -> System.out.printf("valueProperty: %s -> %s%n", oldValue, newValue));
+			cell.addPropertyChangeListener(evt -> {
+				System.out.printf("cell         : %s -> %s%n", evt.getOldValue(), evt.getNewValue());
+				@SuppressWarnings("unchecked")
+				final Optional<Integer> newValue = (Optional<Integer>) evt.getNewValue();
+				valueProperty.set(newValue);
+			});
+
 			ObjectProperty<CellStatus> cellStatusProperty = JavaBeanObjectPropertyBuilder.create().bean(cell)
 					.name("status").<CellStatus> build();
 		} catch (NoSuchMethodException e) {
@@ -110,7 +131,7 @@ public class SudokuSolverController implements Initializable {
 		disableBtns = !disableBtns;
 		this.btnStop.setDisable(disableBtns);
 		this.btnReset.setDisable(disableBtns);
-		
+
 		this.puzzle.cleanCells();
 	}
 
@@ -151,17 +172,16 @@ public class SudokuSolverController implements Initializable {
 
 		this.btnStop.visibleProperty().bind(this.stopVisible);
 		this.btnReset.visibleProperty().bind(this.stopVisible.not());
-		
-//		this.pnlCells.getScene().getst
 
-		
+		// this.pnlCells.getScene().getst
+
 	}
 
 	@FXML
 	public void keyTyped(KeyEvent event) {
 		System.out.println("SudokuSolverController.keyTyped(): " + event);
 	}
-	
+
 	void init() {
 		this.pnlCells.getChildrenUnmodifiable().forEach(this::bindTextFieldAndSudokuCell);
 	}
