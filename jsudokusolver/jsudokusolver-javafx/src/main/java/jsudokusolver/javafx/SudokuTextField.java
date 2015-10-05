@@ -15,8 +15,8 @@ public class SudokuTextField extends TextField {
 			? (txf.getPosition() + 9) : (txf.column) % 9);
 	private static final Function<SudokuTextField, Integer> gotoUperPosition = (txf -> (txf.row > 1)
 			? (txf.getPosition() - 9) : ((txf.getPosition() == 0) ? 80 : 71 + (txf.column - 1)));
-	private static final Function<SudokuTextField, Integer> gotoRowEnd = (txf -> txf.getRow() * 9 - 1);
 	private static final Function<SudokuTextField, Integer> gotoRowStart = (txf -> txf.getRow() * 9 - 9);
+	private static final Function<SudokuTextField, Integer> gotoRowEnd = (txf -> txf.getRow() * 9 - 1);
 
 	private final int row;
 

@@ -22,6 +22,30 @@ SudokuTextField {
 	-fx-border-style: solid;
 }
 
+SudokuTextField.IDLE {
+    
+}
+
+SudokuTextField.ORIGINAL {
+    -fx-font-weight: bold;
+}
+
+SudokuTextField.FILLED {
+    
+}
+
+SudokuTextField.EVALUATING {
+    -fx-background-color: yellow;
+}
+
+SudokuTextField.GUESSING {
+    -fx-background-color: cyan;
+}
+
+SudokuTextField.ERROR {
+    -fx-background-color: red;
+}
+
 #pnlCells {
 }
 

@@ -1,11 +1,12 @@
 package jsudokusolver.javafx;
 
 import java.net.URL;
+import java.util.EnumSet;
 import java.util.Optional;
 import java.util.Random;
 import java.util.ResourceBundle;
+import java.util.Set;
 
-import javafx.beans.binding.Binding;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
@@ -24,16 +25,18 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import jsudokusolver.core.Cell;
 import jsudokusolver.core.CellStatus;
 import jsudokusolver.core.Puzzle;
+import jsudokusolver.core.PuzzleStatus;
 import jsudokusolver.core.Puzzle.CellsFormatter;
 
 public class SudokuSolverController implements Initializable {
+
+	private final Set<PuzzleStatus> editableStatus = EnumSet.of(PuzzleStatus.WAITING, PuzzleStatus.INVALID);
 
 	@FXML
 	private GridPane pnlCells;
@@ -85,33 +88,60 @@ public class SudokuSolverController implements Initializable {
 			ObjectProperty<Optional<Integer>> valueProperty = JavaBeanObjectPropertyBuilder.create().bean(cell)
 					.name("value").build();
 			final StringProperty textProperty = textField.textProperty();
+
 			// Binding ...
 			Bindings.bindBidirectional(textProperty, valueProperty, new CellValueStringConverter());
 
 			textField.addEventFilter(MouseEvent.MOUSE_CLICKED, me -> {
 				if (me.getClickCount() == 2) {
 					int x = random.nextInt(10);
-					cell.setValue(x > 0? Optional.of(x): Optional.empty());
+					cell.setValue(x > 0 ? Optional.of(x) : Optional.empty());
 				}
 			});
 
-//			textProperty.addListener(
-//					ov -> System.out.printf("textProperty : invalidation. valueProperty: %n", valueProperty.get()));
-			textProperty.addListener(
-					(ov, oldValue, newValue) -> System.out.printf("textProperty : %s -> %s%n", oldValue, newValue));
-//			valueProperty.addListener(
-//					ov -> System.out.printf("valueProperty: invalidation. textProperty: %n", textProperty.get()));
-			valueProperty.addListener(
-					(ov, oldValue, newValue) -> System.out.printf("valueProperty: %s -> %s%n", oldValue, newValue));
-			cell.addPropertyChangeListener(evt -> {
-				System.out.printf("cell         : %s -> %s%n", evt.getOldValue(), evt.getNewValue());
-				@SuppressWarnings("unchecked")
-				final Optional<Integer> newValue = (Optional<Integer>) evt.getNewValue();
-				valueProperty.set(newValue);
+			// // textProperty.addListener(
+			// // ov -> System.out.printf("textProperty : invalidation.
+			// // valueProperty: %n", valueProperty.get()));
+			// textProperty.addListener(
+			// (ov, oldValue, newValue) -> System.out.printf("textProperty : %s
+			// -> %s%n", oldValue, newValue));
+			// // valueProperty.addListener(
+			// // ov -> System.out.printf("valueProperty: invalidation.
+			// // textProperty: %n", textProperty.get()));
+			// valueProperty.addListener(
+			// (ov, oldValue, newValue) -> System.out.printf("valueProperty: %s
+			// -> %s%n", oldValue, newValue));
+
+			@SuppressWarnings("unchecked")
+			ObjectProperty<CellStatus> cellStatusProperty = JavaBeanObjectPropertyBuilder.create().bean(cell)
+					.name("status").build();
+
+			cellStatusProperty.addListener((ov, oldValue, newValue) -> System.out
+					.printf("cellStatusProperty : %s -> %s%n", oldValue, newValue));
+
+			valueProperty.addListener((ov, oldValue, newValue) -> {
+				if (puzzle.getStatus() == PuzzleStatus.WAITING) {
+					cell.setStatus(newValue.isPresent() ? CellStatus.ORIGINAL : CellStatus.IDLE);
+				}
+			});
+			cellStatusProperty.addListener((ov, oldValue, newValue) -> {
+				textField.getStyleClass().remove(oldValue.toString());
+				textField.getStyleClass().add(newValue.toString());
 			});
 
-			ObjectProperty<CellStatus> cellStatusProperty = JavaBeanObjectPropertyBuilder.create().bean(cell)
-					.name("status").<CellStatus> build();
+			// Workaround to allow that changes direclty in the Cell value be
+			// detected by JavaFX Properties. See
+			// http://stackoverflow.com/q/32899031/1659543 for more details.
+			cell.addPropertyChangeListener(evt -> {
+				if (evt.getPropertyName().equals(Cell.CELL_VALUE)) {
+					@SuppressWarnings("unchecked")
+					final Optional<Integer> newValue = (Optional<Integer>) evt.getNewValue();
+					valueProperty.set(newValue);
+				} else if (evt.getPropertyName().equals(Cell.CELL_STATUS)) {
+					final CellStatus newValue = (CellStatus) evt.getNewValue();
+					cellStatusProperty.set(newValue);
+				}
+			});
 		} catch (NoSuchMethodException e) {
 			throw new RuntimeException(e);
 		}
