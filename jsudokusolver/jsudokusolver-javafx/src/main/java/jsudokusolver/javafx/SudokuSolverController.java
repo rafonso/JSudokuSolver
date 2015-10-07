@@ -31,12 +31,14 @@ import javafx.scene.layout.StackPane;
 import jsudokusolver.core.Cell;
 import jsudokusolver.core.CellStatus;
 import jsudokusolver.core.Puzzle;
-import jsudokusolver.core.PuzzleStatus;
 import jsudokusolver.core.Puzzle.CellsFormatter;
+import jsudokusolver.core.PuzzleStatus;
 
 public class SudokuSolverController implements Initializable {
 
 	private final Set<PuzzleStatus> editableStatus = EnumSet.of(PuzzleStatus.WAITING, PuzzleStatus.INVALID);
+
+	private final PuzzleFormatParserEventHandler puzzleFormatParserHandler;
 
 	@FXML
 	private GridPane pnlCells;
@@ -75,6 +77,7 @@ public class SudokuSolverController implements Initializable {
 
 	public SudokuSolverController() {
 		this.puzzle = new Puzzle();
+		puzzleFormatParserHandler = new PuzzleFormatParserEventHandler(this.puzzle);
 	}
 
 	private Random random = new Random();
@@ -83,6 +86,7 @@ public class SudokuSolverController implements Initializable {
 		try {
 			SudokuTextField textField = (SudokuTextField) node;
 			Cell cell = this.puzzle.getCell(textField.getRow(), textField.getColumn());
+			textField.addEventFilter(KeyEvent.KEY_PRESSED, this.puzzleFormatParserHandler);
 
 			@SuppressWarnings("unchecked")
 			ObjectProperty<Optional<Integer>> valueProperty = JavaBeanObjectPropertyBuilder.create().bean(cell)
@@ -116,8 +120,8 @@ public class SudokuSolverController implements Initializable {
 			ObjectProperty<CellStatus> cellStatusProperty = JavaBeanObjectPropertyBuilder.create().bean(cell)
 					.name("status").build();
 
-			cellStatusProperty.addListener((ov, oldValue, newValue) -> System.out
-					.printf("cellStatusProperty : %s -> %s%n", oldValue, newValue));
+//			cellStatusProperty.addListener((ov, oldValue, newValue) -> System.out
+//					.printf("cellStatusProperty : %s -> %s%n", oldValue, newValue));
 
 			valueProperty.addListener((ov, oldValue, newValue) -> {
 				if (puzzle.getStatus() == PuzzleStatus.WAITING) {
@@ -129,9 +133,11 @@ public class SudokuSolverController implements Initializable {
 				textField.getStyleClass().add(newValue.toString());
 			});
 
-			// Workaround to allow that changes direclty in the Cell value be
-			// detected by JavaFX Properties. See
-			// http://stackoverflow.com/q/32899031/1659543 for more details.
+			/*
+			 * Workaround to allow that changes direclty in the Cell value be
+			 * detected by JavaFX Properties. See
+			 * http://stackoverflow.com/q/32899031/1659543 for more details.
+			 */
 			cell.addPropertyChangeListener(evt -> {
 				if (evt.getPropertyName().equals(Cell.CELL_VALUE)) {
 					@SuppressWarnings("unchecked")
@@ -168,31 +174,11 @@ public class SudokuSolverController implements Initializable {
 	@FXML
 	public void stopPressed() {
 		System.out.println("SudokuSolverController.stopPressed()");
-
-		Alert alert = new Alert(AlertType.INFORMATION);
-		alert.setTitle("teste");
-		alert.setHeaderText("Information Alert");
-		alert.setContentText(this.puzzle.formatCells(CellsFormatter.ALL));
-		alert.show();
 	}
 
 	@FXML
 	public void resetPressed() {
 		System.out.println("SudokuSolverController.resetPressed()");
-
-		TextInputDialog dialog = new TextInputDialog();
-		dialog.setTitle("Input Puzzle");
-		dialog.setHeaderText("Enter the puzzle. 1 to 9 for filled Cells. 0 for empty Cells. Dots(.) are optionals");
-		dialog.getEditor().addEventFilter(KeyEvent.KEY_TYPED, keyEvent -> {
-			if (!keyEvent.getCharacter().matches("[0-9.]")) {
-				keyEvent.consume();
-			}
-		});
-
-		Optional<String> result = dialog.showAndWait();
-		if (result.isPresent()) {
-			System.out.println("Text entered: " + result.get());
-		}
 	}
 
 	@Override
