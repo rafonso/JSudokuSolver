@@ -2,6 +2,7 @@ package jsudokusolver.javafx;
 
 import java.net.URL;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.ResourceBundle;
@@ -15,15 +16,14 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.property.adapter.JavaBeanObjectPropertyBuilder;
+import javafx.beans.value.ChangeListener;
+import javafx.collections.ListChangeListener.Change;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextInputDialog;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
@@ -31,7 +31,6 @@ import javafx.scene.layout.StackPane;
 import jsudokusolver.core.Cell;
 import jsudokusolver.core.CellStatus;
 import jsudokusolver.core.Puzzle;
-import jsudokusolver.core.Puzzle.CellsFormatter;
 import jsudokusolver.core.PuzzleStatus;
 
 public class SudokuSolverController implements Initializable {
@@ -69,18 +68,42 @@ public class SudokuSolverController implements Initializable {
 
 	private final Puzzle puzzle;
 
+	private final ObjectProperty<PuzzleStatus> puzzleStatusProperty;
+
 	private BooleanProperty stopVisible = new SimpleBooleanProperty(true);
 
 	private IntegerProperty stepTime = new SimpleIntegerProperty();
 
 	private boolean disableBtns = true;
 
+	@SuppressWarnings("unchecked")
 	public SudokuSolverController() {
-		this.puzzle = new Puzzle();
-		puzzleFormatParserHandler = new PuzzleFormatParserEventHandler(this.puzzle);
+		try {
+			this.puzzle = new Puzzle();
+			this.puzzleStatusProperty = JavaBeanObjectPropertyBuilder.create().bean(this.puzzle).name("status").build();
+			this.puzzle.addPropertyChangeListener(evt -> {
+				if (evt.getPropertyName().equals(Puzzle.PUZZLE_STATUS)) {
+					final PuzzleStatus newValue = (PuzzleStatus) evt.getNewValue();
+					puzzleStatusProperty.set(newValue);
+				}
+			});
+
+			puzzleFormatParserHandler = new PuzzleFormatParserEventHandler(this.puzzle);
+		} catch (NoSuchMethodException e) {
+			throw new RuntimeException(e);
+		}
+
 	}
 
 	private Random random = new Random();
+
+	private <E extends Enum<E>> ChangeListener<E> changeCellStyle(SudokuTextField textField) {
+		return (ov, oldValue, newValue) -> {
+			final List<String> styleClass = textField.getStyleClass();
+			styleClass.remove(oldValue.toString());
+			styleClass.add(newValue.toString());
+		};
+	}
 
 	private void bindTextFieldAndSudokuCell(Node node) {
 		try {
@@ -92,7 +115,6 @@ public class SudokuSolverController implements Initializable {
 			ObjectProperty<Optional<Integer>> valueProperty = JavaBeanObjectPropertyBuilder.create().bean(cell)
 					.name("value").build();
 			final StringProperty textProperty = textField.textProperty();
-
 			// Binding ...
 			Bindings.bindBidirectional(textProperty, valueProperty, new CellValueStringConverter());
 
@@ -100,38 +122,25 @@ public class SudokuSolverController implements Initializable {
 				if (me.getClickCount() == 2) {
 					int x = random.nextInt(10);
 					cell.setValue(x > 0 ? Optional.of(x) : Optional.empty());
+				} else if (me.getClickCount() == 3) {
+					System.out.println(textField.getId() + ": " + textField.getStyleClass());
 				}
 			});
-
-			// // textProperty.addListener(
-			// // ov -> System.out.printf("textProperty : invalidation.
-			// // valueProperty: %n", valueProperty.get()));
-			// textProperty.addListener(
-			// (ov, oldValue, newValue) -> System.out.printf("textProperty : %s
-			// -> %s%n", oldValue, newValue));
-			// // valueProperty.addListener(
-			// // ov -> System.out.printf("valueProperty: invalidation.
-			// // textProperty: %n", textProperty.get()));
-			// valueProperty.addListener(
-			// (ov, oldValue, newValue) -> System.out.printf("valueProperty: %s
-			// -> %s%n", oldValue, newValue));
 
 			@SuppressWarnings("unchecked")
 			ObjectProperty<CellStatus> cellStatusProperty = JavaBeanObjectPropertyBuilder.create().bean(cell)
 					.name("status").build();
-
-//			cellStatusProperty.addListener((ov, oldValue, newValue) -> System.out
-//					.printf("cellStatusProperty : %s -> %s%n", oldValue, newValue));
 
 			valueProperty.addListener((ov, oldValue, newValue) -> {
 				if (puzzle.getStatus() == PuzzleStatus.WAITING) {
 					cell.setStatus(newValue.isPresent() ? CellStatus.ORIGINAL : CellStatus.IDLE);
 				}
 			});
-			cellStatusProperty.addListener((ov, oldValue, newValue) -> {
-				textField.getStyleClass().remove(oldValue.toString());
-				textField.getStyleClass().add(newValue.toString());
-			});
+			cellStatusProperty.addListener(this.changeCellStyle(textField));
+			this.puzzleStatusProperty.addListener(this.changeCellStyle(textField));
+
+			textField.getStyleClass().add(cell.getStatus().toString());
+			textField.getStyleClass().add(this.puzzle.getStatus().toString());
 
 			/*
 			 * Workaround to allow that changes direclty in the Cell value be

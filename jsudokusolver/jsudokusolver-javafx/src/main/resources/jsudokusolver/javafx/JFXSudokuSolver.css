@@ -46,6 +46,20 @@ SudokuTextField.ERROR {
     -fx-background-color: red;
 }
 
+SudokuTextField.WAITING, 
+SudokuTextField.INVALID {
+    readonly: true;
+}
+
+SudokuTextField.VALIDATING, 
+SudokuTextField.READY, 
+SudokuTextField.RUNNING, 
+SudokuTextField.STOPPED, 
+SudokuTextField.ERROR,
+SudokuTextField.SOLVED {
+    readonly: true;
+}
+
 #pnlCells {
 }
 
