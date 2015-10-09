@@ -1,5 +1,7 @@
 package jsudokusolver.javafx;
 
+import static jsudokusolver.core.PuzzleStatus.*;
+
 import java.net.URL;
 import java.util.List;
 import java.util.Optional;
@@ -33,6 +35,7 @@ import jsudokusolver.core.CellStatus;
 import jsudokusolver.core.CorrectedCellListener;
 import jsudokusolver.core.Puzzle;
 import jsudokusolver.core.PuzzleStatus;
+import jsudokusolver.core.Solver;
 import jsudokusolver.core.Validator;
 import jsudokusolver.core.exception.EmptyPuzzleException;
 import jsudokusolver.core.exception.RepeatedCellsException;
@@ -208,21 +211,19 @@ public class SudokuSolverController implements Initializable {
 	public void cleanPressed() {
 		System.out.println("SudokuSolverController.cleanPressed()");
 
-		disableBtns = !disableBtns;
-		this.btnStop.setDisable(disableBtns);
-		this.btnReset.setDisable(disableBtns);
-
 		this.puzzle.cleanCells();
 	}
 
 	@FXML
 	public void stopPressed() {
 		System.out.println("SudokuSolverController.stopPressed()");
+		this.puzzle.setStatus(STOPPED);
 	}
 
 	@FXML
 	public void resetPressed() {
 		System.out.println("SudokuSolverController.resetPressed()");
+		this.puzzle.reset();
 	}
 
 	@Override
@@ -248,9 +249,25 @@ public class SudokuSolverController implements Initializable {
 		final CorrectedCellListener correctedCellListener = new CorrectedCellListener(this.puzzle);
 		final BooleanBinding puzzleStatusIsEditable = this.puzzleStatusProperty.isEqualTo(PuzzleStatus.WAITING)
 				.or(this.puzzleStatusProperty.isEqualTo(PuzzleStatus.INVALID));
-
 		this.pnlCells.getChildrenUnmodifiable().forEach(node -> this.bindTextFieldAndSudokuCell(node,
 				puzzleFormatParserHandler, correctedCellListener, puzzleStatusIsEditable));
+
+		this.btnRun.disableProperty().bind( //
+				this.puzzleStatusProperty.isNotEqualTo(WAITING) //
+						.and(this.puzzleStatusProperty.isNotEqualTo(VALIDATING))
+						.and(this.puzzleStatusProperty.isNotEqualTo(READY))
+						.and(this.puzzleStatusProperty.isNotEqualTo(INVALID)));
+		this.btnClean.disableProperty().bind(this.puzzleStatusProperty.isEqualTo(RUNNING));
+		this.btnStop.disableProperty().bind(this.puzzleStatusProperty.isNotEqualTo(RUNNING));
+		this.btnReset.disableProperty().bind( //
+				this.puzzleStatusProperty.isEqualTo(SOLVED) //
+						.or(this.puzzleStatusProperty.isEqualTo(STOPPED)).not());
+
+		BooleanBinding btnResetVisible = this.puzzleStatusProperty.isEqualTo(SOLVED)
+				.or(this.puzzleStatusProperty.isEqualTo(STOPPED)).or(this.puzzleStatusProperty.isEqualTo(ERROR));
+		this.btnReset.visibleProperty().bind(btnResetVisible);
+		this.btnStop.visibleProperty().bind(this.btnReset.visibleProperty().not());
+
 	}
 
 }
