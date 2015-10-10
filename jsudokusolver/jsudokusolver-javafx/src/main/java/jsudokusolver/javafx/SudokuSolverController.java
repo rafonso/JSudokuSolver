@@ -57,10 +57,13 @@ public class SudokuSolverController implements Initializable {
 	private ComboBox<Integer> cmbStepTime;
 
 	@FXML
-	private Label lblTimeMs;
+	private Label lblTime;
 
 	@FXML
 	private Label lblCycles;
+
+	@FXML
+	private GridPane pnlControls;
 
 	private final Puzzle puzzle;
 
@@ -147,21 +150,24 @@ public class SudokuSolverController implements Initializable {
 	void init() {
 		this.pnlCells.getChildrenUnmodifiable().forEach(new TextFieldAndSudokuCellBinder(puzzle, puzzleStatusProperty));
 
-		this.btnRun.disableProperty().bind( //
-				this.puzzleStatusProperty.isNotEqualTo(WAITING) //
-						.and(this.puzzleStatusProperty.isNotEqualTo(VALIDATING))
-						.and(this.puzzleStatusProperty.isNotEqualTo(READY))
-						.and(this.puzzleStatusProperty.isNotEqualTo(INVALID)));
+		final BooleanBinding btnRunDisabled = this.puzzleStatusProperty.isNotEqualTo(WAITING) //
+				.and(this.puzzleStatusProperty.isNotEqualTo(VALIDATING))
+				.and(this.puzzleStatusProperty.isNotEqualTo(READY))
+				.and(this.puzzleStatusProperty.isNotEqualTo(INVALID));
+		this.btnRun.disableProperty().bind(btnRunDisabled);
 		this.btnClean.disableProperty().bind(this.puzzleStatusProperty.isEqualTo(RUNNING));
-		this.btnStop.disableProperty().bind(this.puzzleStatusProperty.isNotEqualTo(RUNNING));
-		this.btnReset.disableProperty().bind( //
-				this.puzzleStatusProperty.isEqualTo(SOLVED) //
-						.or(this.puzzleStatusProperty.isEqualTo(STOPPED)).not());
+		this.btnStop.disableProperty().bind(this.btnClean.disableProperty().not());
+		this.btnReset.disableProperty().bind(this.puzzleStatusProperty.isNotEqualTo(SOLVED) //
+				.and(this.puzzleStatusProperty.isNotEqualTo(STOPPED)));
 
 		BooleanBinding btnResetVisible = this.puzzleStatusProperty.isEqualTo(SOLVED)
 				.or(this.puzzleStatusProperty.isEqualTo(STOPPED)).or(this.puzzleStatusProperty.isEqualTo(ERROR));
 		this.btnReset.visibleProperty().bind(btnResetVisible);
 		this.btnStop.visibleProperty().bind(this.btnReset.visibleProperty().not());
+
+		BooleanBinding labelsVisible = btnResetVisible.or(this.puzzleStatusProperty.isEqualTo(RUNNING));
+		this.pnlControls.getChildrenUnmodifiable().filtered(n -> n.getStyleClass().contains("counter"))
+				.forEach(n -> n.visibleProperty().bind(labelsVisible));
 	}
 
 }
