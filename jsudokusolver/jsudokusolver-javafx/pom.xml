@@ -14,5 +14,10 @@
   		<artifactId>jsudokusolver-core</artifactId>
   		<version>${current.version}</version>
   	</dependency>
+  	<dependency>
+  		<groupId>jsudokusolver.console</groupId>
+  		<artifactId>jsudokusolver-console</artifactId>
+  		<version>${current.version}</version>
+  	</dependency>
   </dependencies>
 </project>

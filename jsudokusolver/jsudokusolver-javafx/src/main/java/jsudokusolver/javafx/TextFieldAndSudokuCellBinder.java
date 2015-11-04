@@ -1,12 +1,12 @@
 package jsudokusolver.javafx;
 
+import static javafx.application.Platform.runLater;
 import static jsudokusolver.core.PuzzleStatus.INVALID;
 import static jsudokusolver.core.PuzzleStatus.WAITING;
 
 import java.beans.PropertyChangeListener;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 import java.util.function.Consumer;
 
 import javafx.beans.binding.Bindings;
@@ -18,7 +18,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
+
 import jsudokusolver.core.Cell;
 import jsudokusolver.core.CellStatus;
 import jsudokusolver.core.CorrectedCellListener;
@@ -45,14 +45,11 @@ class TextFieldAndSudokuCellBinder implements Consumer<Node> {
 				.or(this.puzzleStatusProperty.isEqualTo(INVALID));
 	}
 
-	@Deprecated
-	private Random random = new Random();
-
 	private <E extends Enum<E>> ChangeListener<E> changeCellStyle(List<String> styleClass) {
-		return (ov, oldValue, newValue) -> {
+		return (ov, oldValue, newValue) -> runLater(() -> {
 			styleClass.remove(oldValue.toString());
 			styleClass.add(newValue.toString());
-		};
+		});
 	}
 
 	private void bindStyleClass(SudokuTextField textField, Cell cell, ObjectProperty<CellStatus> cellStatusProperty) {
@@ -91,14 +88,15 @@ class TextFieldAndSudokuCellBinder implements Consumer<Node> {
 	 */
 	private PropertyChangeListener bindCellEvents(ObjectProperty<Optional<Integer>> valueProperty,
 			ObjectProperty<CellStatus> cellStatusProperty) {
+		// TODO Tranfer to SolverTask?
 		return evt -> {
 			if (evt.getPropertyName().equals(Cell.CELL_VALUE)) {
 				@SuppressWarnings("unchecked")
 				final Optional<Integer> newValue = (Optional<Integer>) evt.getNewValue();
-				valueProperty.set(newValue);
+				runLater(() -> valueProperty.set(newValue));
 			} else if (evt.getPropertyName().equals(Cell.CELL_STATUS)) {
 				final CellStatus newValue = (CellStatus) evt.getNewValue();
-				cellStatusProperty.set(newValue);
+				runLater(() -> cellStatusProperty.set(newValue));
 			}
 		};
 	}
@@ -131,16 +129,6 @@ class TextFieldAndSudokuCellBinder implements Consumer<Node> {
 
 			textField.editableProperty().bind(this.puzzleStatusIsEditable);
 			textField.focusTraversableProperty().bind(this.puzzleStatusIsEditable);
-
-			// TODO Remove when Solver is implemented.
-			textField.addEventFilter(MouseEvent.MOUSE_CLICKED, me -> {
-				if (me.getClickCount() == 2) {
-					int x = random.nextInt(10);
-					cell.setValue(x > 0 ? Optional.of(x) : Optional.empty());
-				} else if (me.getClickCount() == 3) {
-					System.out.println(textField.getId() + ": " + textField.getStyleClass());
-				}
-			});
 		} catch (NoSuchMethodException e) {
 			throw new RuntimeException(e);
 		}

@@ -9,16 +9,11 @@ import static jsudokusolver.core.PuzzleStatus.STOPPED;
 import static jsudokusolver.core.PuzzleStatus.VALIDATING;
 import static jsudokusolver.core.PuzzleStatus.WAITING;
 
-import java.net.URL;
-import java.util.ResourceBundle;
-
 import javafx.beans.binding.BooleanBinding;
-import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.adapter.JavaBeanObjectPropertyBuilder;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -27,13 +22,15 @@ import javafx.scene.control.Label;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
+
+import jsudokusolver.console.ConsoleListener;
 import jsudokusolver.core.Puzzle;
 import jsudokusolver.core.PuzzleStatus;
 import jsudokusolver.core.Validator;
 import jsudokusolver.core.exception.EmptyPuzzleException;
 import jsudokusolver.core.exception.RepeatedCellsException;
 
-public class SudokuSolverController implements Initializable {
+public class SudokuSolverController {
 
 	@FXML
 	private GridPane pnlCells;
@@ -69,12 +66,11 @@ public class SudokuSolverController implements Initializable {
 
 	private final ObjectProperty<PuzzleStatus> puzzleStatusProperty;
 
-	private IntegerProperty stepTime = new SimpleIntegerProperty();
-
 	@SuppressWarnings("unchecked")
 	public SudokuSolverController() {
 		try {
 			this.puzzle = new Puzzle();
+			this.puzzle.addPropertyChangeListener(new ConsoleListener());
 			this.puzzleStatusProperty = JavaBeanObjectPropertyBuilder.create().bean(this.puzzle).name("status").build();
 			/*
 			 * Workaround to allow that changes direclty in the Puzzle Status be
@@ -87,12 +83,12 @@ public class SudokuSolverController implements Initializable {
 					puzzleStatusProperty.set(newValue);
 				}
 			});
-
+			
 		} catch (NoSuchMethodException e) {
 			throw new RuntimeException(e);
 		}
 	}
-
+	
 	private void showInvalidMessage(final String headerText, String msg) {
 		Alert alert = new Alert(AlertType.ERROR);
 		alert.setTitle("Puzzle Error!");
@@ -106,17 +102,20 @@ public class SudokuSolverController implements Initializable {
 		try {
 			new Validator().validate(this.puzzle);
 
-			this.puzzle.setStatus(RUNNING);
+//			this.puzzle.setStatus(RUNNING);
+			Task<Void> task = new SolverTask(puzzle, puzzleStatusProperty, lblCycles, lblTime, cmbStepTime);
+			Thread thread = new Thread(task);
+			thread.start();
 		} catch (RepeatedCellsException e) {
 			final String headerText = "Repeated values";
 			String msg = String.format("Repeated value %d in %s %d, cells [%d,%d] and [%d,%d]", //
 					e.getRepeatedValue(), e.getPuzzlePositions().getDescription(), e.getPosition(), //
 					e.getCell1().getRow(), e.getCell1().getColumn(), //
 					e.getCell2().getRow(), e.getCell2().getColumn());
-			showInvalidMessage(headerText, msg);
+			this.showInvalidMessage(headerText, msg);
 		} catch (EmptyPuzzleException e) {
 			final String msg = "Empty Puzzle.";
-			showInvalidMessage(msg, msg);
+			this.showInvalidMessage(msg, msg);
 			this.pnlCells.getChildrenUnmodifiable().get(0).requestFocus();
 		}
 	}
@@ -134,12 +133,6 @@ public class SudokuSolverController implements Initializable {
 	@FXML
 	public void resetPressed() {
 		this.puzzle.reset();
-	}
-
-	@Override
-	public void initialize(URL location, ResourceBundle resources) {
-		this.stepTime.bind(this.cmbStepTime.getSelectionModel().selectedItemProperty());
-		this.stepTime.addListener((ov, oldValue, newValue) -> System.out.println("stepTime = " + newValue));
 	}
 
 	@FXML
