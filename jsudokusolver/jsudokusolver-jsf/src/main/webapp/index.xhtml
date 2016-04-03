@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+<h:head>
+	<title>#{msgs.title}</title>
+	<link rel="stylesheet" type="text/css"
+		href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.3/jquery-ui.min.css"></link>
+	<link rel="stylesheet" type="text/css"
+		href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.3/jquery-ui.structure.min.css"></link>
+	<link rel="stylesheet" type="text/css"
+		href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.3/jquery-ui.theme.min.css"></link>
+	<link rel="stylesheet" type="text/css"
+		href="https://code.jquery.com/ui/1.11.3/themes/smoothness/jquery-ui.css"></link>
+	<h:outputStylesheet library="css" name="style.css"></h:outputStylesheet>
+	<script type="text/javascript"
+		src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script type="text/javascript"
+		src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/jquery-ui.min.js"></script>
+	<h:outputScript library="js" name="sudoku.js"></h:outputScript>
+</h:head>
+<h:body>
+	<h:panelGroup id="main" layout="block">
+		<h1>#{msgs.heading}</h1>
+		<h:form id="solverForm" prependId="false">
+			<h:panelGroup id="puzzle" layout="block">
+				Agora é #{solverBean.agora}
+				<c:forEach begin="1" end="9" var="row">
+					<div id="row${row}" class="puzzle-row">
+						<c:forEach begin="1" end="9" var="col">
+							<h:inputText id="cell${row}${col}" size="1" maxlength="1" />
+						</c:forEach>
+					</div>
+				</c:forEach>
+			</h:panelGroup>
+			<h:panelGroup id="controls" layout="block">
+				<h:panelGroup id="buttons" layout="block">
+					<h:button id="btnRun" />
+					<h:button id="btnClean" />
+					<h:button id="btnStop" />
+				</h:panelGroup>
+				<h:panelGroup id="rowSteptime" layout="block">
+					<label for="steptime">Step Time</label>
+					<h:selectOneMenu id="steptime">
+						<f:selectItems value="#{solverBean.steptimes}"></f:selectItems>
+					</h:selectOneMenu>
+					<span id="ms">ms</span>
+				</h:panelGroup>
+			</h:panelGroup>
+
+		</h:form>
+	</h:panelGroup>
+</h:body>
+</html>

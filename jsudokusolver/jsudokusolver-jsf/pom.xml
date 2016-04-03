@@ -1,0 +1,23 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>${group.id}</groupId>
+		<artifactId>${artifact.id}</artifactId>
+		<version>${current.version}</version>
+	</parent>
+	<groupId>jsudokusolver.jsf</groupId>
+	<artifactId>jsudokusolver-jsf</artifactId>
+	<name>jsudokusolver-jsf</name>
+	<packaging>war</packaging>
+	<dependencies>
+		<dependency>
+			<groupId>javax</groupId>
+			<artifactId>javaee-api</artifactId>
+			<version>6.0</version>
+		</dependency>
+	</dependencies>
+	<build>
+		<finalName>jsudokusolver-jsf</finalName>
+	</build>
+</project>
